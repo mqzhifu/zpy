@@ -5,3 +5,4 @@ vendor
 .DS_Store
 desktop.ini
 __pycache__
+test_img
