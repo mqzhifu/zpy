@@ -1,5 +1,6 @@
 
 def init_pd(pd):
+    pd.set_option('display.width', 1000)
     #显示所有列
     pd.set_option('display.max_columns', None)
     #显示所有行

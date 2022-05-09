@@ -1,4 +1,6 @@
 import random
+import urllib.request
+
 comm_ua_list = {
     "pc":[
         #火狐
@@ -25,7 +27,7 @@ comm_ua_list = {
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36",
         "Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko"
         "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)",
-        
+
         #淘宝
         "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.11 TaoBrowser/2.0 Safari/536.11",
     ],
@@ -38,6 +40,33 @@ comm_ua_list = {
     ,
 }
 
+def get_common_header():
+    headers = {
+        "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36",
+        # "referer": "https://hjd2048.com/2048/thread.php?fid-13-page-1.html",
+        #           "accept-encoding": "gzip, deflate, br",
+    # "accept-language": "zh-CN,zh;q=0.9",
+    # "cache-control": "max-age=0",
+    #     "sec-ch-ua-mobile": "?0",
+    #     "sec-ch-ua-platform": "macOS",
+    #    "sec-fetch-dest": "document",
+    #    "sec-fetch-mode": "navigate",
+    #                                "sec-fetch-site": "none",
+    #                                "sec-fetch-user": "?1",
+    # "upgrade-insecure-requests": "1",
+    #
+    #     "sec-ch-ua": '" Not A;Brand";v="99", "Chromium";v="100", "Google Chrome";v="100"',
+    #
+    #     "cookie":"zh_choose=n; a22e7_threadlog=,4,13,; a22e7_lastpos=F13; a22e7_ol_offset=257147; a22e7_lastvisit=1024	1652070198	/2048/thread.php?fid-13-page-1.html",
+        # "User-Agent":  get_rand_one_ua("pc"),
+        #           "accept-encoding": "gzip, deflate, br",
+        # "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+        # "Accept-Language": "zh-CN,zh;q=0.9",
+        # "referer":"https://er23w1232.xyz/",
+        # "Accept-Charset":"GB2312,utf-8;q=0.7,*;q=0.7",
+    }
+    return headers
+
 def get_rand_one_ua (category):
     list = comm_ua_list[category]
     max = len(list)
@@ -49,3 +78,12 @@ def save_content_to_file(filePath,fileName,content):
     fullPath = filePath + fileName
     with open(fullPath,"w",encoding="utf-8")as fp:
         fp.write(content)
+
+def get_proxe():
+    ProxyList = {
+        "socks5":"127.0.0.1:10010",
+    }
+    proxy_handler =  urllib.request.ProxyHandler(ProxyList)
+    opener = urllib.request.build_opener(proxy_handler)
+    urllib.request.install_opener(opener)
+    # opener.open(url)
