@@ -25,15 +25,13 @@ def main():
     spiderByPage(1,3)
 
     # thread_list = []
-    # step = 100
-    # for i in range(1,1600,step):
+    # step = 30
+    # for i in range(1,350,step):
     #     thisTimePageStart = i
     #     thisTimePageEnd = i + step - 1
     #     print("create thread : ",thisTimePageStart,thisTimePageEnd)
-    #     # print("create thread : ",i,i+1)
-    #     #
+    #
     #     thread = threading.Thread(target=spiderByPage,args=(thisTimePageStart,thisTimePageEnd))
-    #     # thread = threading.Thread(target=spiderByPage,args=(i,i+1))
     #     thread_list.append(thread)
     #
     # for p in thread_list:
@@ -43,8 +41,8 @@ def main():
     # for p in thread_list:
     #     p.join()
     #
-    execTime = time.time() - startTime
 
+    execTime = time.time() - startTime
     print("exec time:",execTime)
 
 
@@ -81,7 +79,7 @@ def spiderByPage(pageStart,pageMax):
         # print(lineStr)
         content = content + lineStr
 
-    dir = "./"
+    dir = "./98tang/"
     fileNamePrefix = "page_list"
     fileNmae = str(pageStart) + "_" +str(pageMax)
     extName = ".txt"
@@ -193,8 +191,14 @@ def spider_detail(url,record):
     record["imgs"] = imgHref
     # print("imgHref:",imgHref)
 
-def parserDetail(url):
-    print(url)
+def parserDetail(url,page_index):
+    htmlData ,err_code = requestGetOnePageHtml(url,-1)
+    htmlTree = etree.HTML(htmlData)
+    # /html/body/div[7]/div[6]/div[2]/div[1]/table/tbody/tr[1]/td[2]/div[2]/div/div[1]/table
+    # tt = htmlTree.xpath("//td[@id='postmessage']")
+    tt = htmlTree.xpath("//td[contains(@id,'postmessage')][1]/text()" )
+
+    print(tt)
     exit(1)
 
 def parser98tang(htmlData,domain,page_index):
@@ -214,7 +218,7 @@ def parser98tang(htmlData,domain,page_index):
             record["date"]      = tr.xpath("./td[2]/em/span/text()")[0]
         # print(record)
         url = domain + record["href"]
-        parserDetail(url)
+        parserDetail(url,page_index)
         record_list.append(record)
 
     return record_list
