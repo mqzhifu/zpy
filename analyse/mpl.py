@@ -4,18 +4,10 @@ import random
 
 import matplotlib.pyplot as plt
 import numpy as np
-def process_font():
-    plt.rcParams['font.sans-serif'] = 'SimHei'
-    plt.rcParams['font.size'] = 12  # 字体大小
-    plt.rcParams['axes.unicode_minus'] = False  # 用来正常显示负号
+import util.common as uc
 
-    # import matplotlib
-    # 查看字体存放位置，下载SimHei.tff，并放到此位置下
-    # 查看字体缓存位置，删除
-    # print(matplotlib.matplotlib_fname(),matplotlib.get_cachedir())
-    # exit(11)
+uc.process_font(plt)
 
-process_font()
 saveImgPath = "./test_img/"
 #demo 1 生成一个最简单的线图
 # plt.figure(figsize=(20,8),dpi=100)
