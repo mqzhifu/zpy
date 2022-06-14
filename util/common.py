@@ -27,4 +27,5 @@ def set_pd_base(pd):
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
 
+
     pd.set_option('display.float_format',lambda x : '%.2f' % x)
