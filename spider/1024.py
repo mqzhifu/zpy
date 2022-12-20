@@ -26,7 +26,7 @@ def main():
 
     thread_list = []
     step = 100
-    for i in range(1,1600,step):
+    for i in range(1,1200,step):
         thisTimePageStart = i
         thisTimePageEnd = i + step - 1
         print("create thread : ",thisTimePageStart,thisTimePageEnd)
@@ -49,7 +49,7 @@ def main():
 
 
 def spiderByPage(pageStart,pageMax):
-    finalPageMax = 1531
+    finalPageMax = 1200
     if pageMax >= finalPageMax:
         pageMax = finalPageMax
 
@@ -70,7 +70,8 @@ def spiderByPage(pageStart,pageMax):
         htmlData ,err_code = requestGetOnePageHtml(oneUrl,page_index)
         if err_code > 0 :
             print("err_code:",err_code)
-            return [],err_code
+            continue
+            # return [],err_code
         # print("htmlData:",htmlData)
         # uspider.save_content_to_file("./","html_data.html",htmlData)
 
@@ -87,11 +88,12 @@ def spiderByPage(pageStart,pageMax):
         # print(lineStr)
         content = content + lineStr
 
-    dir = "./"
+    dir = "./1024/"
     fileNamePrefix = "page_list"
     fileNmae = str(pageStart) + "_" +str(pageMax)
     extName = ".txt"
     fullPath = dir + fileNamePrefix + fileNmae + extName
+    print(fullPath)
 
     with open(fullPath,"w",encoding="utf-8")as fp:
         fp.write(content)
@@ -194,6 +196,7 @@ def parser1024(htmlData,domain,page_index):
             continue
 
         successTr = successTr + 1
+
 
         record_list.append(record)
 

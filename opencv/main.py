@@ -9,6 +9,11 @@ def main():
     # juanji()
     mask()
 
+def base():
+    print("func base:")
+    pic_path = "./heying.jpeg"
+    hsv = cv2.cvtColor(pic_path, code=cv2.COLOR_BGR2HSV)
+    cv2.imshow(pic_path,hvs)
 def mask():
     print("im in mask:")
     file = "../test_img/demo_a3.jpg"

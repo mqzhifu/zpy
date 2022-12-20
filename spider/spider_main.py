@@ -15,8 +15,8 @@ def main():
 
     # c = spider.lagou_selenium.LagouSelenium(data_path)
     # c.start()
-    lagou = spider.lagou_third.lagou()
-    lagou.run()
+    # lagou = spider.lagou_third.lagou()
+    # lagou.run()
 
 if  __name__ == "__main__" :
     main()
