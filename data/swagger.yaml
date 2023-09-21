@@ -1,0 +1,5430 @@
+definitions:
+  gamematch.Group:
+    properties:
+      addition:
+        description: 请求方附加属性值
+        type: string
+      id:
+        type: integer
+      match_times:
+        description: 已匹配过的次数，超过3次，证明该用户始终不能匹配成功，直接丢弃，不过没用到
+        type: integer
+      out_group_id:
+        description: 报名时，客户端请求时，自带的一个ID
+        type: integer
+      person:
+        description: 小组总人数
+        type: integer
+      players:
+        description: 用户列表
+        items:
+          $ref: '#/definitions/gamematch.Player'
+        type: array
+      sign_time:
+        description: 报名时间
+        type: integer
+      sign_timeout:
+        description: 多少秒后无人来取，即超时，更新用户状态，删除数据
+        type: integer
+      success_time:
+        description: 匹配成功时间
+        type: integer
+      success_timeout:
+        description: 匹配成功后，无人来取，超时
+        type: integer
+      team_id:
+        description: 组队互相PK的时候，得成两个队伍
+        type: integer
+      type:
+        description: 报名跟报名成功会各创建一条group记录，1：报名，2匹配成功
+        type: integer
+      weight:
+        description: 小组权重
+        type: number
+    type: object
+  gamematch.Player:
+    properties:
+      a_time:
+        type: integer
+      group_id:
+        type: integer
+      id:
+        type: integer
+      sign_timeout:
+        type: integer
+      status:
+        type: integer
+      success_timeout:
+        type: integer
+      u_time:
+        type: integer
+      weight:
+        type: number
+      weight_attrs:
+        additionalProperties:
+          type: integer
+        type: object
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+  httpresponse.Captcha:
+    description: 获取图片验证码
+    properties:
+      content_length:
+        description: 数字的总长度
+        type: integer
+      id:
+        description: 使用(验证)时要带上这个ID，后端才能判断
+        type: string
+      pic_content:
+        description: 图片内容,base64
+        type: string
+    type: object
+  httpresponse.ConstInfo:
+    description: 常量信息
+    properties:
+      key:
+        type: string
+      list:
+        additionalProperties:
+          type: integer
+        type: object
+      name:
+        type: string
+    type: object
+  httpresponse.HttpUploadRs:
+    description: 上传图片结果
+    properties:
+      err:
+        description: 上传图片是否发生错误，如果为空证明没有，此字段给上传多张图片使用
+        type: string
+      filename:
+        description: 文件名
+        type: string
+      full_local_domain_url:
+        type: string
+      full_local_ip_url:
+        description: 本地存储的访问地址
+        type: string
+      local_disk_path:
+        description: 本地硬盘存储的路径
+        type: string
+      local_domain_url:
+        description: 访问本地文件DOMAIN-URL地址
+        type: string
+      local_ip_url:
+        description: 访问本地文件IP-URL地址
+        type: string
+      md5_sign:
+        description: 文件的MD5签名
+        type: string
+      oss_local_url:
+        description: 自己的域名绑定在阿里OSS上
+        type: string
+      oss_url:
+        description: 阿里云的地址
+        type: string
+      relative_path:
+        description: 相对路径：用户自定义的前缀目录 + hash目录名
+        type: string
+      static_dir:
+        description: 存储表态文件的目录名，它是UploadDir的上一级
+        type: string
+      upload_dir:
+        description: 存储上传图片的目录名
+        type: string
+    type: object
+  httpresponse.LoginResponse:
+    description: 登陆成功返回结果
+    properties:
+      expires_at:
+        description: token失效时间
+        type: integer
+      is_new_reg:
+        description: 3方登陆时，为了简化操作，如果没注册将自动注册
+        type: boolean
+      is_new_token:
+        description: 重复登陆也可以成功，但返回的是旧的TOKEN，非新生成token
+        type: boolean
+      token:
+        description: 生成的token
+        type: string
+      user:
+        $ref: '#/definitions/model.User'
+        description: 登陆成功结果响应
+    type: object
+  model.CicdPublish:
+    description: 代码部署与发布
+    properties:
+      code_dir:
+        type: string
+      created_at:
+        description: 创建时间
+        type: integer
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+        description: 是否删除
+      deploy_status:
+        type: integer
+      deploy_type:
+        type: integer
+      err_info:
+        type: string
+      exec_time:
+        type: integer
+      id:
+        description: 自增ID
+        type: integer
+      log:
+        type: string
+      server_id:
+        type: integer
+      server_info:
+        type: string
+      service_id:
+        type: integer
+      service_info:
+        type: string
+      status:
+        type: integer
+      step:
+        type: integer
+      updated_at:
+        description: 最后更新时间
+        type: integer
+    type: object
+  model.MailLog:
+    description: 站内信 - 日志
+    properties:
+      auth_code:
+        description: 验证码
+        type: string
+      auth_status:
+        description: 验证码状态
+        type: integer
+      content:
+        description: 模板内容,可变量替换
+        type: string
+      created_at:
+        description: 创建时间
+        type: integer
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+        description: 是否删除
+      expire_time:
+        description: 失效时间
+        type: integer
+      id:
+        description: 自增ID
+        type: integer
+      mail_group_id:
+        description: 群发的ID
+        type: integer
+      project_id:
+        description: 项目ID
+        type: integer
+      receiver:
+        description: 接收者uid
+        type: integer
+      receiver_del:
+        description: 接收者已删除
+        type: integer
+      receiver_read:
+        description: 接收者已读
+        type: integer
+      rule_id:
+        description: 规则ID
+        type: integer
+      send_del:
+        description: 发送者已删除
+        type: integer
+      send_ip:
+        description: 发送者IP，如为空系统默认取：请求方的IP,最好给真实的，一但被刷，会使用此值
+        type: string
+      send_time:
+        description: 发送时间
+        type: integer
+      send_uid:
+        description: 发送者UID，管理员是9999，未知8888
+        type: integer
+      status:
+        type: integer
+      title:
+        description: 标题
+        type: string
+      updated_at:
+        description: 最后更新时间
+        type: integer
+    type: object
+  model.Project:
+    description: 项目详情
+    properties:
+      access:
+        description: baseAuth 认证KEY
+        type: string
+      auth_sign:
+        description: 验证数据的签名0关闭1开启验证
+        type: integer
+      created_at:
+        description: 创建时间
+        type: integer
+      data_encrypt:
+        description: 数据传输的加密类型0关闭1base64
+        type: integer
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+        description: 是否删除
+      desc:
+        description: 描述信息
+        type: string
+      git:
+        description: GIT代码仓URL地址
+        type: string
+      id:
+        description: 自增ID
+        type: integer
+      lang:
+        description: 实现语言:1php2go3java4js5c++6c7c#
+        type: string
+      name:
+        description: 名称
+        type: string
+      secret_key:
+        description: 密钥,用于一些需要加密的场景
+        type: string
+      status:
+        description: 状态1正常2关闭
+        type: integer
+      type:
+        description: 类型,1service 2frontend 3backend 4app 5 unity 6 cocos
+        type: integer
+      updated_at:
+        description: 最后更新时间
+        type: integer
+    type: object
+  model.User:
+    description: 用户基础信息
+    properties:
+      birthday:
+        description: 出生日期,unix时间戳
+        type: integer
+      created_at:
+        description: 创建时间
+        type: integer
+      deleted_at:
+        $ref: '#/definitions/gorm.DeletedAt'
+        description: 是否删除
+      email:
+        description: 邮箱
+        type: string
+      headerImg:
+        description: 头像url地址
+        type: string
+      id:
+        description: 自增ID
+        type: integer
+      mobile:
+        description: 手机号
+        type: string
+      nick_name:
+        description: 昵称
+        type: string
+      project_id:
+        description: 项目ID
+        type: integer
+      recommend:
+        description: 推荐人
+        type: string
+      robot:
+        description: 机器人
+        type: integer
+      role:
+        description: 角色1护士2专家
+        type: integer
+      sex:
+        description: 性别1男2女
+        type: integer
+      status:
+        description: 状态1正常2禁用
+        type: integer
+      test:
+        description: 是否测试,1是2否
+        type: integer
+      type:
+        description: 是否游客,1是2否
+        type: integer
+      updated_at:
+        description: 最后更新时间
+        type: integer
+      username:
+        description: 用户登录名
+        type: string
+      uuid:
+        description: UID字条串化
+        type: string
+    type: object
+  pb.GameMatchPlayerCancel:
+    properties:
+      group_id:
+        type: integer
+      rule_id:
+        type: integer
+      source_uid:
+        type: integer
+    type: object
+  pb.GameMatchSign:
+    properties:
+      addition:
+        type: string
+      group_id:
+        type: integer
+      player_sets:
+        items:
+          $ref: '#/definitions/pb.GameMatchSignPlayer'
+        type: array
+      rule_id:
+        type: integer
+      source_uid:
+        type: integer
+    type: object
+  pb.GameMatchSignPlayer:
+    properties:
+      uid:
+        type: integer
+      weight_attr:
+        additionalProperties:
+          type: integer
+        type: object
+    type: object
+  pb.ProjectPushMsg:
+    properties:
+      content:
+        type: string
+      source_project_id:
+        type: integer
+      source_uid:
+        type: integer
+      target_project_id:
+        type: integer
+      target_uids:
+        type: string
+      type:
+        type: integer
+    type: object
+  request.AccessToken:
+    description: 获取访问权限的 token
+    properties:
+      grant:
+        description: 保留字，先不用
+        type: string
+      sign:
+        description: 签名:md5(SecretKey+Timestamp+Access)
+        type: string
+      timestamp:
+        description: unix 时间戳 10位的
+        type: integer
+    type: object
+  request.BindEmail:
+    properties:
+      email:
+        description: 邮箱号
+        type: string
+      project_id:
+        description: 项目Id
+        type: integer
+      rule_id:
+        description: 邮件类型，登陆/注册
+        type: integer
+      sms_auth_code:
+        description: 邮件验证码
+        type: string
+    type: object
+  request.BindMobile:
+    properties:
+      mobile:
+        description: 手机号
+        type: string
+      project_id:
+        description: 项目Id
+        type: integer
+      rule_id:
+        description: 短信类型，登陆/注册
+        type: integer
+      sms_auth_code:
+        description: 短信验证码
+        type: string
+    type: object
+  request.Captcha:
+    description: 图片验证码
+    properties:
+      height:
+        description: 图片高度，默认：80，最大：1000
+        type: integer
+      width:
+        description: 图片宽度，默认：240，最大：1000
+        type: integer
+    type: object
+  request.CheckEmailExist:
+    description: 检测邮件是否已存在
+    properties:
+      email:
+        description: 邮箱
+        type: string
+      purpose:
+        description: 用途,1注册2找回密码3修改密码4登陆
+        type: integer
+    type: object
+  request.CheckMobileExist:
+    description: 检测手机号是否已存在
+    properties:
+      mobile:
+        description: 手机号
+        type: string
+      purpose:
+        description: 用途,1注册2找回密码3修改密码4登陆
+        type: integer
+    type: object
+  request.CheckUsernameExist:
+    description: 检测用户名是否已存在
+    properties:
+      purpose:
+        description: 用途,1注册2找回密码3修改密码4登陆
+        type: integer
+      username:
+        description: 用户名
+        type: string
+    type: object
+  request.CicdDeploy:
+    description: 部署一个服务
+    properties:
+      flag:
+        description: 1本地2远程
+        type: integer
+      server_id:
+        description: 服务器ID
+        type: integer
+      service_id:
+        description: 服务ID
+        type: integer
+    type: object
+  request.ConfigCenterOpt:
+    description: 配置中心的操作
+    properties:
+      env:
+        description: 环境变量
+        type: integer
+      key:
+        description: 文件中的key
+        type: string
+      module:
+        description: 模块/文件名
+        type: string
+      value:
+        description: 写入时，值
+        type: string
+    type: object
+  request.CustomClaims:
+    description: jwt 容器内容
+    properties:
+      id:
+        description: 用户ID
+        type: integer
+      nick_name:
+        description: 用户昵称
+        type: string
+      project_id:
+        description: 项目ID
+        type: integer
+      source_type:
+        description: 来源
+        type: integer
+      username:
+        description: 用户名
+        type: string
+    type: object
+  request.Empty:
+    description: 空结构体，1给网关，请求参数泛类型 2给 protobuf 用 3 给 swag api 工具使用
+    type: object
+  request.FileCopy:
+    properties:
+      src_relative_path:
+        description: 源：相对路径 + 文件名
+        type: string
+      sync_oss:
+        description: 是否同步到云oss 1是2否
+        type: integer
+      tar_relative_path:
+        description: 目标：相对路径 + 文件名
+        type: string
+    type: object
+  request.FileDelete:
+    properties:
+      relative_path:
+        description: 相对路径 + 文件名
+        type: string
+      sync_oss:
+        description: 是否同步到云oss 1是2否
+        type: integer
+    type: object
+  request.FrameSyncRoomHistory:
+    properties:
+      playerId:
+        type: integer
+      roomId:
+        type: string
+      sequenceNumberEnd:
+        type: integer
+      sequenceNumberStart:
+        type: integer
+      sourceUid:
+        type: integer
+    type: object
+  request.Goods:
+    properties:
+      admin_id:
+        description: 管理员ID
+        type: integer
+      allow_coupon:
+        description: 允许使用优惠券，0不允许
+        type: integer
+      allow_gold_coin:
+        description: 允许使用金币，0不允许
+        type: integer
+      desc:
+        description: 描述
+        type: string
+      memo:
+        description: 备注
+        type: string
+      pay_allow_type:
+        description: 允许支付类型1微信2支付宝
+        type: string
+      period:
+        description: 买一个商品给多少个数量
+        type: integer
+      price:
+        description: 价格
+        type: integer
+      status:
+        description: 状态 1:正常 2:下架
+        type: integer
+      stock:
+        description: 库存数量
+        type: integer
+      title:
+        description: 标题
+        type: string
+      type:
+        description: 分类
+        type: integer
+    type: object
+  request.HeaderBaseInfo:
+    description: http客户端请求头-基础信息
+    properties:
+      app_version:
+        description: app/前端/服务/项目 版本号
+        type: string
+      device:
+        description: ipad iphone huawei mi chrome firefox ie
+        type: string
+      device_id:
+        description: 设备ID,这个可能牵涉权限隐私，获取不到，前端可以跟后端自定义个生成规则
+        type: string
+      device_version:
+        description: mi8 hongmi7 ios8 ios9 ie8 ie9
+        type: string
+      dpi:
+        description: 分辨率
+        type: string
+      ip:
+        description: 请求方的IP
+        type: string
+      lat:
+        description: 纬度
+        type: string
+      lon:
+        description: 经度
+        type: string
+      os:
+        description: win mac android ios
+        type: string
+      os_version:
+        description: win7 win9 mac10 android9
+        type: string
+      pack_name:
+        description: APP上传的包名
+        type: string
+      referer:
+        description: 页面来源
+        type: string
+      sn:
+        description: 每个自己的设置有一个编号
+        type: string
+    type: object
+  request.HeaderRequest:
+    description: http 公共客户端请求头
+    properties:
+      access:
+        description: 使用网关时，不允许随意访问，得有access key
+        type: string
+      auto_ip:
+        description: 后端系统自动获取获取,供后端/业务层使用
+        type: string
+      base_info:
+        $ref: '#/definitions/request.HeaderBaseInfo'
+        description: 收集客户端的一些基础信息，json格式，参考：HeaderBaseInfo 结构体
+      client_req_time:
+        description: 客户端请求时间  unix_time
+        type: integer
+      project_id:
+        description: 请求方来源:项目ID，所有的服务/项目/前端/App，均要先向管理员申请一个账号，才能用于日常请求
+        type: integer
+      request_id:
+        description: 每次请求的唯一标识，响应时也会返回，如果请求方没有，后端会默认生成一个
+        type: string
+      second_auth_ps:
+        description: 有些API是给管理员使用，除了TOKEN验证外，还得进行二次验证
+        type: string
+      second_auth_uname:
+        description: 有些API是给管理员使用，除了TOKEN验证外，还得进行二次验证
+        type: string
+      server_receive_time:
+        description: 服务端接收到请求的时间 unix_time
+        type: integer
+      sign:
+        description: 签名
+        type: string
+      source_type:
+        description: 请求方来源：类型(pc h5 ios android vr spider unknow)，不同类型，不同JWT，原因：1手机端登陆后，PC端再登陆，互踢，无法共存。2越权，有些接口不允许互相访问
+        type: integer
+      token:
+        description: JWT用户登陆令牌(HS256 对称算法，共享一个密钥)
+        type: string
+      trace_id:
+        description: 追踪ID，主要用于链路追踪，如果请求方没有，后端会默认生成一个
+        type: string
+    type: object
+  request.HeaderResponse:
+    description: http 公共响应头
+    properties:
+      auto_ip:
+        description: 获取不到请求方IP时，系统自动获取生成
+        type: string
+      client_req_time:
+        description: 客户端请求时间  unix_time
+        type: integer
+      project_id:
+        description: 项目ID，所有的服务/项目/前端/App，均要先向管理员申请一个账号，才能用于日常请求
+        type: integer
+      request_id:
+        description: 每次请求的唯一标识，响应时也会返回，如果请求方没有，后端会默认生成一个
+        type: string
+      server_receive_time:
+        description: 服务端接收到请求的时间 unix_time
+        type: integer
+      server_response_time:
+        description: 服务端最后响应的时间 uni_xtime
+        type: integer
+      sign:
+        type: string
+      source_type:
+        description: 请求方来源类型(pc h5 ios android vr spider unknow)，不同类型，不同JWT，原因：1手机端登陆后，PC端再登陆，互踢，无法共存。2越权，有些接口不允许互相访问
+        type: integer
+      trace_id:
+        description: 追踪ID，主要用于链路追踪，如果请求方没有，后端会默认生成一个，跟request略像，但给后端使用
+        type: string
+    type: object
+  request.Login:
+    description: 正常登陆，需要用户名密码
+    properties:
+      captcha:
+        description: 验证码
+        type: string
+      captchaId:
+        description: 验证码-ID
+        type: string
+      password:
+        description: 密码
+        type: string
+      username:
+        description: 用户名：普通字符串、手机号、邮箱
+        type: string
+    type: object
+  request.LoginSMS:
+    description: 短信登陆
+    properties:
+      captcha:
+        description: Code        string `json:"code"`
+        type: string
+      captchaId:
+        description: 图片验证码ID
+        type: string
+      mobile:
+        description: 手机号
+        type: string
+      sms_auth_code:
+        description: 手机验证码
+        type: string
+      sms_rule_id:
+        description: 短信类型，登陆/注册
+        type: integer
+    type: object
+  request.MailInfo:
+    description: 站内信一条消息详情
+    properties:
+      auto_receiver_del:
+        description: 自动更新为：接收者已删除
+        type: integer
+      auto_receiver_read:
+        description: 自动更新为：接收者已读
+        type: integer
+      id:
+        type: integer
+    type: object
+  request.MailList:
+    description: 站内信列表
+    properties:
+      box_type:
+        description: 1收件箱2发件箱4全部
+        type: integer
+      expire:
+        description: 1消息已过期2消息未过期
+        type: integer
+      page:
+        description: 当前页数
+        type: integer
+      pageSize:
+        description: 每页多少条记录
+        type: integer
+      receiver_del:
+        description: 1接收者已删除2接收者未删除
+        type: integer
+      receiver_read:
+        description: 1接收者已读2接收者未读
+        type: integer
+    type: object
+  request.Orders:
+    properties:
+      admin_memo:
+        description: 备注
+        type: string
+      amount:
+        description: 购买数量
+        type: integer
+      coupon_id:
+        description: 优惠卷ID
+        type: integer
+      gold_coin:
+        description: 金币数
+        type: integer
+      goods_id:
+        description: 商品ID
+        type: integer
+      source:
+        description: 来源
+        type: integer
+      type:
+        description: 分类
+        type: integer
+      uid:
+        description: 用户ID
+        type: integer
+      user_memo:
+        description: 备注
+        type: string
+    type: object
+  request.PageInfo:
+    description: 分页
+    properties:
+      page:
+        description: 当前页数
+        type: integer
+      pageSize:
+        description: 每页多少条记录
+        type: integer
+    type: object
+  request.ParserToken:
+    description: 解析token
+    properties:
+      token:
+        description: 需要解析的token字符串
+        type: string
+    type: object
+  request.Payment:
+    properties:
+      orders_id:
+        type: integer
+      type:
+        type: integer
+    type: object
+  request.RLoginThird:
+    description: 3方登陆
+    properties:
+      birthday:
+        description: 生日
+        type: integer
+      channel:
+        description: 来源渠道
+        type: integer
+      confirm_ps:
+        description: 确认密码
+        type: string
+      ext_diy:
+        description: 自定义用户属性，暂未实现
+        type: string
+      guest:
+        description: 类型,1普通2游客
+        type: integer
+      headerImg:
+        description: 头像地址
+        type: string
+      nickName:
+        description: 昵称
+        type: string
+      passWord:
+        description: 登陆密码 转md5存储
+        type: string
+      platform_type:
+        description: 3方平台类型，如：微信、QQ、facebook、抖音，此值必填
+        type: integer
+      project_id:
+        description: 项目Id
+        type: integer
+      recommend:
+        description: 推荐人
+        type: string
+      sex:
+        description: 性别
+        type: integer
+      test:
+        description: 是否为测试用户1是2否
+        type: integer
+      third_id:
+        description: 3方平台用户ID，此值必填
+        type: string
+      third_type:
+        description: 三方平台类型
+        type: integer
+      userName:
+        description: 用户名
+        type: string
+    type: object
+  request.Register:
+    description: 注册信息
+    properties:
+      birthday:
+        description: 生日
+        type: integer
+      channel:
+        description: 来源渠道
+        type: integer
+      confirm_ps:
+        description: 确认密码
+        type: string
+      ext_diy:
+        description: 自定义用户属性，暂未实现
+        type: string
+      guest:
+        description: 类型,1普通2游客
+        type: integer
+      headerImg:
+        description: 头像地址
+        type: string
+      nickName:
+        description: 昵称
+        type: string
+      passWord:
+        description: 登陆密码 转md5存储
+        type: string
+      project_id:
+        description: 项目Id
+        type: integer
+      recommend:
+        description: 推荐人
+        type: string
+      sex:
+        description: 性别
+        type: integer
+      test:
+        description: 是否为测试用户1是2否
+        type: integer
+      third_id:
+        description: 三方平台ID
+        type: string
+      third_type:
+        description: 三方平台类型
+        type: integer
+      userName:
+        description: 用户名
+        type: string
+    type: object
+  request.RegisterSms:
+    description: 注册信息 - 通过手机号
+    properties:
+      captcha:
+        description: 图片验证码
+        type: string
+      captchaId:
+        description: 图片验证码ID
+        type: string
+      mobile:
+        description: ProjectId   int    `json:"project_id"`    //项目Id
+        type: string
+      sms_auth_code:
+        description: 短信验证码
+        type: string
+      sms_rule_id:
+        description: 短信类型，登陆/注册
+        type: integer
+    type: object
+  request.RestPasswordSms:
+    description: 修改密码
+    properties:
+      mobile:
+        description: 手机号
+        type: string
+      new_password_confirm:
+        description: 新密码确认
+        type: string
+      newPassword:
+        description: 新密码
+        type: string
+      password:
+        description: 旧密码
+        type: string
+      sms_auth_code:
+        description: 短信验证码
+        type: string
+      sms_rule_id:
+        description: 短信类型，登陆/注册
+        type: integer
+    type: object
+  request.SendEmail:
+    description: 发送邮件
+    properties:
+      carbon_copy:
+        description: 抄送（email格式），可以是多人
+        items:
+          type: string
+        type: array
+      receiver:
+        description: 接收者（email格式）
+        type: string
+      replaceVar:
+        additionalProperties:
+          type: string
+        description: 邮件内容模块中变量替换
+        type: object
+      rule_id:
+        description: 配置规则的ID
+        type: integer
+      send_ip:
+        description: 发送者IP，如为空系统默认取：请求方的IP,最好给真实的，一但被刷，会使用此值
+        type: string
+      send_uid:
+        description: 发送者ID，管理员:9999，未知:8888
+        type: integer
+    type: object
+  request.SendMail:
+    description: 发送站内信
+    properties:
+      receiver:
+        description: '接收者: uid or grpuId or tagId or uids'
+        type: string
+      replaceVar:
+        additionalProperties:
+          type: string
+        description: 邮件内容模块中变量替换
+        type: object
+      rule_id:
+        description: 配置规则的ID
+        type: integer
+      send_ip:
+        description: 发送者IP，如为空系统默认取：请求方的IP,最好给真实的，一但被刷，会使用此值
+        type: string
+      send_time:
+        description: 定时发送，unixStamp 必须大于当前时间
+        type: integer
+      send_uid:
+        description: 发送者ID，管理员是9999，未知8888
+        type: integer
+    type: object
+  request.SendSMS:
+    description: 发送验证码
+    properties:
+      captcha:
+        description: 验证码
+        type: string
+      captchaId:
+        description: 获取验证码时拿到的Id
+        type: string
+      receiver:
+        description: 接收者-手机号
+        type: string
+      replace_var:
+        additionalProperties:
+          type: string
+        description: 邮件内容模块中变量替换
+        type: object
+      rule_id:
+        description: 配置规则的ID
+        type: integer
+      send_ip:
+        description: 发送者IP，如为空系统默认取：请求方的IP,最好给真实的，一但被刷，会使用此值
+        type: string
+      send_uid:
+        description: 发送者ID，管理员是9999，未知8888
+        type: integer
+    type: object
+  request.SetPassword:
+    description: 设置/修改密码
+    properties:
+      new_password_confirm:
+        description: 新密码确认
+        type: string
+      newPassword:
+        description: 新密码
+        type: string
+      password:
+        description: 旧密码
+        type: string
+    type: object
+  request.SetUserInfo:
+    description: 修改用户基础信息
+    properties:
+      birthday:
+        description: 生日
+        type: integer
+      headerImg:
+        description: 头像地址
+        type: string
+      nickName:
+        description: 昵称
+        type: string
+      sex:
+        description: 性别
+        type: integer
+    type: object
+  request.StatisticsLogData:
+    description: 眼镜端(客户端)的详细日志
+    properties:
+      action:
+        description: 动作描述，如：user_client_a_button ,user_open_window ,  user_pay ,user_order
+        type: string
+      category:
+        description: 分类ID，保留字，暂不使用
+        type: integer
+      msg:
+        description: 自定义消息体，算是对action的一种补充
+        type: string
+      project_id:
+        description: 项目/服务/app- Id
+        type: integer
+      uid:
+        description: 用户ID
+        type: integer
+    type: object
+  request.TestHeader:
+    description: 主要是为了 swagger 生成文档
+    properties:
+      header_request:
+        $ref: '#/definitions/request.HeaderRequest'
+        description: 请求头-结构
+      header_response:
+        $ref: '#/definitions/request.HeaderResponse'
+        description: 响应头-结构
+    type: object
+  request.TwinAgoraReq:
+    description: 获取声网的一个 record_id
+    properties:
+      record_id:
+        type: integer
+    type: object
+  request.TwinAgoraToken:
+    description: 获取声网 token
+    properties:
+      channel:
+        description: 频道名称，给rtc使用,RTM可为空
+        type: string
+      username:
+        description: 用户名 or 用户ID
+        type: string
+    type: object
+  request.UploadFile:
+    description: 上传文件
+    properties:
+      file:
+        description: input file 控件的name
+        type: string
+      hash_dir:
+        description: 自动创建前缀目录 1不使用2月3天4小时
+        type: integer
+      module:
+        description: 模块/业务名，可用于给文件名加前缀目录
+        type: string
+      stream:
+        description: 文件流,例：data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOus
+          .......
+        type: string
+      sync_oss:
+        description: 是否同步到云oss 1是2否
+        type: integer
+    type: object
+  util.AgoraAcquireClientReq:
+    properties:
+      region:
+        description: 区域，这个写死：CN，即可
+        type: string
+      resourceExpiredHour:
+        description: 单位为小时，录制周期，从成功开启云端录制并获得 sid （录制 ID）后开始计算。默认72
+        type: integer
+      scene:
+        description: 0：（默认）实时音视频录制或延时混音,1：页面录制,2：延时转码
+        type: integer
+    type: object
+  util.AgoraAcquireReq:
+    properties:
+      clientRequest:
+        $ref: '#/definitions/util.AgoraAcquireClientReq'
+        description: 详细的配置信息
+      cname:
+        description: 频道名称
+        type: string
+      uid:
+        description: 声网uid, 最好用类似：99999，而不是用普通用户的UID
+        type: string
+    type: object
+  util.AgoraCloudRecordRes:
+    properties:
+      code:
+        description: 请求声网的具体的业务状态码
+        type: integer
+      httpCode:
+        description: 请求声网的http影响状态码
+        type: integer
+      id:
+        description: 自己平台生成的ID，大部分接口都需要用到
+        type: integer
+      message:
+        description: 这里有值，证明头部验证失败了
+        type: string
+      reason:
+        description: 这里有值，证明头部验证失败了
+        type: string
+      resourceId:
+        description: 声网返回的资源ID
+        type: string
+      serverResponse:
+        $ref: '#/definitions/util.AgoraRecordServerResponse'
+        description: 给query接口使用
+      sid:
+        description: 声网返回的SESSION-ID
+        type: string
+    type: object
+  util.AgoraFileList:
+    properties:
+      fileName:
+        type: string
+      isPlayable:
+        type: boolean
+      mixedAllUser:
+        type: boolean
+      sliceStartTime:
+        type: integer
+      trackType:
+        type: string
+      uid:
+        type: integer
+    type: object
+  util.AgoraRecordServerPayloadResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  util.AgoraRecordServerResponse:
+    properties:
+      command:
+        type: string
+      fileList:
+        items:
+          $ref: '#/definitions/util.AgoraFileList'
+        type: array
+      fileListMode:
+        type: string
+      payload:
+        $ref: '#/definitions/util.AgoraRecordServerPayloadResponse'
+      subscribeModeBitmask:
+        type: integer
+      uploadingStatus:
+        type: string
+      vid:
+        type: string
+    type: object
+  util.Conn:
+    properties:
+      add_time:
+        description: 添加时间
+        type: integer
+      content_type:
+        description: "传输数据的内容类型\t此值由第一次通信时确定，直到断开连接前，不会变更"
+        type: integer
+      metrics:
+        $ref: '#/definitions/util.ConnMetrics'
+        description: 测量/统计，公共metrics是放汇总数据的，这个是针对一个用户的
+      protocol_type:
+        description: "传输数据的类型\t\t此值由第一次通信时确定，直到断开连接前，不会变更"
+        type: integer
+      rtt:
+        description: 延迟
+        type: integer
+      session_id:
+        description: 会话ID
+        type: string
+      status:
+        description: 状态
+        type: integer
+      up_time:
+        description: 最后更新时间
+        type: integer
+      user_id:
+        description: FD 绑定 uid
+        type: integer
+    type: object
+  util.ConnMetrics:
+    properties:
+      receive_msg_size:
+        type: integer
+      receive_msg_times:
+        type: integer
+      send_msg_size:
+        type: integer
+      send_msg_times:
+        type: integer
+    type: object
+  util.NetWayOption:
+    properties:
+      client_heartbeat_time:
+        description: 客户端心跳时间(秒)
+        type: integer
+      connTimeout:
+        description: 一个FD超时时间
+        type: integer
+      default_content_type:
+        description: 默认响应内容格式 ：json protobuf
+        type: integer
+      default_protocol_type:
+        description: 默认响应协议：ws tcp udp
+        type: integer
+      io_timeout:
+        description: read write sock fd 超时时间
+        type: integer
+      listenIp:
+        description: 程序启动时监听的IP
+        type: string
+      login_auth_secret_key:
+        description: jwt登陆验证-密钥
+        type: string
+      loginAuthType:
+        description: jwt登陆验证
+        type: string
+      maxClientConnMum:
+        description: 客户端最大连接数
+        type: integer
+      msg_content_max:
+        description: 一条消息内容最大值,byte,ps:最大10KB
+        type: integer
+      outDomain:
+        description: 长连接有时候，得用https ，nginx直接反代略简单些，需要域名
+        type: string
+      outIp:
+        description: 对外访问的IP
+        type: string
+      server_heartbeat_time:
+        description: 服务端心跳时间(秒)
+        type: integer
+      tcpPort:
+        description: tcp监听端口号
+        type: string
+      udpPort:
+        description: udp端口号
+        type: string
+      wsPort:
+        description: ws监听端口号
+        type: string
+      wsUri:
+        description: ws接HOST的后面的URL地址
+        type: string
+    type: object
+  util.Server:
+    properties:
+      env:
+        type: integer
+      id:
+        type: integer
+      inner_ip:
+        type: string
+      name:
+        type: string
+      out_ip:
+        type: string
+      ping_status:
+        description: 1正常2异常
+        type: integer
+      platform:
+        type: string
+      status:
+        description: 1正常2关闭
+        type: integer
+      super_visor_status:
+        type: integer
+    type: object
+  util.Service:
+    properties:
+      create_time:
+        type: integer
+      db_key:
+        description: Access    string `json:"access"`
+        type: string
+      deploy:
+        description: 是否已部署到本机，0否，1是
+        type: integer
+      desc:
+        type: string
+      git:
+        type: string
+      id:
+        type: integer
+      lb_type:
+        type: integer
+      name:
+        type: string
+      secretKey:
+        type: string
+      status:
+        type: integer
+      type:
+        type: integer
+    type: object
+  v1.AgoraCloudCallbackPayloadDetailReq:
+    properties:
+      errorCode:
+        type: integer
+      errorLevel:
+        type: integer
+      errorMsg:
+        type: string
+      exitStatus:
+        type: integer
+      fileList:
+        items:
+          $ref: '#/definitions/v1.AgoraFile'
+        type: array
+      leaveCode:
+        type: integer
+      module:
+        type: integer
+      msgName:
+        type: string
+      stat:
+        type: integer
+      status:
+        type: integer
+    type: object
+  v1.AgoraCloudCallbackPayloadReq:
+    properties:
+      cname:
+        type: string
+      details:
+        $ref: '#/definitions/v1.AgoraCloudCallbackPayloadDetailReq'
+      sendts:
+        type: integer
+      sequence:
+        type: integer
+      serviceScene:
+        type: string
+      serviceType:
+        type: integer
+      sid:
+        type: string
+      uid:
+        type: string
+    type: object
+  v1.AgoraCloudCallbackReq:
+    properties:
+      eventType:
+        type: integer
+      noticeId:
+        type: string
+      notifyMs:
+        type: integer
+      payload:
+        $ref: '#/definitions/v1.AgoraCloudCallbackPayloadReq'
+      productId:
+        type: integer
+    type: object
+  v1.AgoraFile:
+    properties:
+      fileName:
+        type: string
+      isPlayable:
+        type: boolean
+      mixedAllUser:
+        type: boolean
+      sliceStartTime:
+        type: integer
+      trackType:
+        type: string
+      uid:
+        type: string
+    type: object
+  v1.AgoraRtcCallbackPayloadReq:
+    properties:
+      channelName:
+        type: string
+      platform:
+        type: integer
+      reason:
+        type: integer
+      ts:
+        type: integer
+      uid:
+        type: integer
+    type: object
+  v1.AgoraRtcCallbackReq:
+    properties:
+      eventType:
+        type: integer
+      noticeId:
+        type: string
+      notifyMs:
+        type: integer
+      payload:
+        $ref: '#/definitions/v1.AgoraRtcCallbackPayloadReq'
+      productId:
+        type: integer
+    type: object
+  v1.MiguRes:
+    properties:
+      appId:
+        type: string
+      data:
+        type: string
+      dataBytes:
+        items:
+          type: integer
+        type: array
+      finalData:
+        type: string
+      sign:
+        type: string
+      signLower:
+        type: string
+      time:
+        type: integer
+      timeStr:
+        type: string
+    type: object
+info:
+  contact:
+    email: 78878296@qq.com
+    name: 小z
+  description: |-
+    restful api 工具，模拟客户端请求，方便调试/测试
+    注：这只是一个工具，不是万能的，像：动态枚举类型、公共请求header、动态常量等,详细的请去 <a href="http://godoc.seedreality.com" target="_black">godoc</a> 里去查看
+    注：所有 header 遵循HTTP标准，即：自定义的header中每个key 以大写X开头，单词以中划线分隔，每个单词首字母大写
+    注：header的格式定义，参考结构：request.HeaderRequest，也可以调用调用接口获得:GET /tools/header/struct
+    注：所有的请求都需要包含header+body,header主要用于：基础数据收集+基础数据验证
+    注：99%的请求内容格式均是JSON(暂不支持兼容json+html-form)，只有上传文件例外(html+form)
+    注：所有接口均支持：跨域请求
+    注：所有接口的响应格式均是json格式 ，包含3个值: code data msg ,具体参考 model.httpresponse.Response
+    测试/开发人员：用户已上传的图片，查看，<a href="http://static.seedreality.com/upload/" target="_blank">点这里</a>
+    测试/开发人员：配置中心的文件，查看，<a href="http://static.seedreality.com/data/config/" target="_blank">点这里</a>
+    后台UI：<a href="http://admin.seedreality.com" target="_blank">点这里</a>
+    <a href="http://static.seedreality.com/html/cicd.html" target="_blank">测试cicd</a> <a href="http://static.seedreality.com/html/frame_sync.html" target="_blank">测试帧同步</a> <a href="http://static.seedreality.com/html/file_upload.html" target="_blank">测试多文件上传</a>
+  license:
+    name: 小z
+  title: z golang 框架
+  version: 0.6 测试版Alta
+paths:
+  /base/access/token:
+    post:
+      description: 项目没有用户名+密码，只有密钥，拿到 ACCCESS-TOKEN 后，就跟正常用户登陆成功一样，可访问大部分API接口.sign值规则：md5(SecretKey+Timestamp+Access)
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.AccessToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpresponse.LoginResponse'
+      summary: 项目获取 ACCCESS-TOKEN
+      tags:
+      - Base
+  /base/captcha:
+    post:
+      consumes:
+      - application/json
+      description: 图片格式：BASE64，防止有人恶意攻击，如：短信轰炸、暴力破解密码等,前端使用方法：<img src="data:image/jpg;base64,接口获取的内容"/>
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/request.Captcha'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 图片信息
+          schema:
+            $ref: '#/definitions/httpresponse.Captcha'
+      summary: 生成图片验证码
+      tags:
+      - Base
+  /base/check/email:
+    post:
+      consumes:
+      - application/json
+      description: 注册/找加密码 使用
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CheckEmailExist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:存在 false:不存在
+          schema:
+            type: boolean
+      summary: 检测邮件：是否已存在
+      tags:
+      - Base
+  /base/check/mobile:
+    post:
+      consumes:
+      - application/json
+      description: 注册/找加密码/登陆 使用
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CheckMobileExist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:存在 false:不存在
+          schema:
+            type: boolean
+      summary: 检测手机号：是否已存在
+      tags:
+      - Base
+  /base/check/username:
+    post:
+      consumes:
+      - application/json
+      description: 登陆 使用
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CheckUsernameExist'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:存在 false:不存在
+          schema:
+            type: boolean
+      summary: 检测用户名：是否已存在
+      tags:
+      - Base
+  /base/login:
+    post:
+      consumes:
+      - application/json
+      description: 用户名/手机/邮箱+密码->登陆，验证成功后，生成token
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Login'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpresponse.LoginResponse'
+      summary: 普通登陆
+      tags:
+      - Base
+  /base/login/sms:
+    post:
+      consumes:
+      - application/json
+      description: 登陆(验证)成功后，生成token
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginSMS'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpresponse.LoginResponse'
+      summary: 短信(验证码)登陆
+      tags:
+      - Base
+  /base/login/third:
+    post:
+      description: 3方平台登陆，验证成功后，生成token
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.RLoginThird'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpresponse.LoginResponse'
+      summary: 用户使用3方账号联合登陆
+      tags:
+      - Base
+  /base/parser/token:
+    post:
+      consumes:
+      - application/json
+      description: 单点登陆，各应用收到的接口都会带有token，可以到用户中心(微服务)再认证/解析一下，确保安全
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 需要验证的token值
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ParserToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/request.CustomClaims'
+      summary: 解析一个TOKEN
+      tags:
+      - Base
+  /base/register:
+    post:
+      consumes:
+      - application/json
+      description: 普通注册，需要有：用户名 密码
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: '"{"app_version": "1.12.2","device": "iphone","device_id": "aaaabbbcccddd","device_version":
+          "11.0.1","dpi": "1028x720","ip": "127.0.0.1","lat": "23.1123334455","lon":
+          "45.11233311","os": 1,"os_version": "10.1","referer": "www.baidu.com"}"'
+        description: 客户端基础信息(json格式,参考request.HeaderBaseInfo)
+        in: header
+        name: X-Base-Info
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Register'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户结构体
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: 用户注册账号
+      tags:
+      - Base
+  /base/register/sms:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: '"{"app_version": "1.12.2","device": "iphone","device_id": "aaaabbbcccddd","device_version":
+          "11.0.1","dpi": "1028x720","ip": "127.0.0.1","lat": "23.1123334455","lon":
+          "45.11233311","os": 1,"os_version": "10.1","referer": "www.baidu.com"}"'
+        description: 客户端基础信息(json格式,参考request.HeaderBaseInfo)
+        in: header
+        name: X-Base-Info
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.RegisterSms'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户结构体
+          schema:
+            $ref: '#/definitions/model.User'
+      summary: 用户注册账号-通过手机验证码
+      tags:
+      - Base
+  /base/send/email:
+    post:
+      consumes:
+      - application/json
+      description: 登陆、注册、找回密码等使用，目前不支持附件功能，邮件的内容由ruleId匹配（后台录入）
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SendEmail'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 发送邮件
+      tags:
+      - Base
+  /base/send/sms:
+    post:
+      consumes:
+      - application/json
+      description: 登陆、注册、找回密码等，短信的内容由ruleId匹配（后台录入）
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SendSMS'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 发送短信
+      tags:
+      - Base
+  /base/sms/reset/password:
+    post:
+      consumes:
+      - application/json
+      description: 忘记密码后，可发送短信通知，重置密码
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        enum:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 用户名, 原密码, 新密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.RestPasswordSms'
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 重置密码 - 通过短信
+      tags:
+      - Base
+  /callback/agora/cloud:
+    post:
+      description: 订阅什么事件就回调什么事件
+      parameters:
+      - default: 26a4fa1ec3df450caad3d8a4b907efe5476124da
+        description: 签名
+        in: header
+        name: Agora-Signature
+        required: true
+        type: string
+      - default: 60216b719ca4a21701fcea43373370671d1401e4a8e408e2a550aa1a041fbe1c
+        description: 签名
+        in: header
+        name: Agora-Signature-V2
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/v1.AgoraCloudCallbackReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 声网 - 云端录制 - 回调
+      tags:
+      - Callback
+  /callback/agora/rtc:
+    post:
+      description: 订阅什么事件就回调什么事件
+      parameters:
+      - default: 26a4fa1ec3df450caad3d8a4b907efe5476124da
+        description: 签名
+        in: header
+        name: Agora-Signature
+        required: true
+        type: string
+      - default: 60216b719ca4a21701fcea43373370671d1401e4a8e408e2a550aa1a041fbe1c
+        description: 签名
+        in: header
+        name: Agora-Signature-V2
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/v1.AgoraRtcCallbackReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 声网 - 回调
+      tags:
+      - Callback
+  /cicd/local/all/server/service/list:
+    get:
+      description: 每台机器上，有多少个服务，具体可以操作部署哪个项目到远端服务器
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Service'
+      summary: 查看 所有项目的 可部署 列表
+      tags:
+      - Cicd
+  /cicd/publish/list:
+    get:
+      description: 查看 项目的已部署 日志 列表
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CicdPublish'
+      summary: 部署/发布 列表
+      tags:
+      - Cicd
+  /cicd/server/list:
+    get:
+      description: 属于基础数据，获取所有服务器列表，并做ping，确定状态
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Server'
+      summary: 服务器 列表
+      tags:
+      - Cicd
+  /cicd/service/deploy:
+    post:
+      description: 开始把项目部署到指定的服务器上，本机编译，最后再把代码同步到远端服务器上
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CicdDeploy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:失败
+          schema:
+            type: bool
+      summary: 部署一个服务
+      tags:
+      - Cicd
+  /cicd/service/list:
+    get:
+      description: 属于基础数据，查看下 当前所有项目的状态
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/util.Service'
+      summary: 所有服务(项目) 列表
+      tags:
+      - Cicd
+  /cicd/service/publish/{id}/{flag}:
+    get:
+      description: 已部署好的项目，正式 发布
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: publish id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:失败
+          schema:
+            type: bool
+      summary: 发布项目
+      tags:
+      - Cicd
+  /cicd/superVisor/list:
+    get:
+      description: 每台机上都会有一个 superVisor 进程，管理着所有 服务/项目，从 superVisor 视角看一下所有 项目的状态
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 数据过长，先用bool替代
+          schema:
+            type: boolean
+      summary: 每台机器上的 superVisor
+      tags:
+      - Cicd
+  /cicd/superVisor/process:
+    post:
+      description: 对远端服务器上的 superVisor，管理一个服务，如：停止进程 重启进程 启动进程
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.CicdDeploy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:失败
+          schema:
+            type: bool
+      summary: 本机操作远端的 superVisor ，管理进程
+      tags:
+      - Cicd
+  /config/center/create/module:
+    post:
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ConfigCenterOpt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 创建模块(文件)
+      tags:
+      - ConfigCenter
+  /config/center/get/key:
+    post:
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ConfigCenterOpt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 以以模块(文件)+里面具体的key 为单位，获取配置信息
+      tags:
+      - ConfigCenter
+  /config/center/get/module:
+    post:
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ConfigCenterOpt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 以模块(文件)为单位，获取该模块(文件)下的所有配置信息
+      tags:
+      - ConfigCenter
+  /config/center/module/set/key:
+    post:
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - description: 请求参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.ConfigCenterOpt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 以模块(文件)+里面具体的key 为单位，设置置信息(如果存在，覆盖)
+      tags:
+      - ConfigCenter
+  /file/big/download:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 大文件走NGINX不现实，而且，中间断了后，无法续传
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件相对路径
+        in: formData
+        name: path
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 下载结果
+          schema:
+            $ref: '#/definitions/httpresponse.HttpUploadRs'
+      security:
+      - ApiKeyAuth: []
+      summary: 大文件下载(暂未实现，后续补充)
+      tags:
+      - File
+  /file/copy/one:
+    post:
+      description: 主要是阿里的OSS没有文件移动的功能，被动先用复制再删除的方式实现
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.FileCopy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除结果
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 复制一个文件
+      tags:
+      - File
+  /file/delete/one:
+    post:
+      description: 先删除本地，可选择删除OSS，注：路径要绝对正确，否则OSS上的文件不会删除
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.FileDelete'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除结果
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除一个文件
+      tags:
+      - File
+  /file/move/one:
+    post:
+      description: 注意下：阿里的OSS没有文件移动的功能，先复制再删除的方式实现
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.FileCopy'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 移动结果
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 移动一个文件
+      tags:
+      - File
+  /file/upload/doc/multi:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 单文件上限20M。支持格式："txt", "doc", "docx", "dotx", "json", "cvs", "xls",
+        "xlsx", "sql", "msword", "ppt", "pptx", "pdf", "wps", "vsd"
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: files
+        required: true
+        type: file
+      - description: 模块/业务名，可用于给文件名加前缀目录，注：开头和结尾都不要加反斜杠
+        in: formData
+        name: module
+        type: string
+      - default: 2
+        description: 是否同步到云oss 1是2否
+        in: formData
+        name: sync_oss
+        type: integer
+      - default: 0
+        description: 自动创建前缀目录 0不使用1月2天3小时
+        in: formData
+        name: hash_dir
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 每个图片的上传结果
+          schema:
+            items:
+              $ref: '#/definitions/httpresponse.HttpUploadRs'
+            type: array
+      summary: 上传多个文档
+      tags:
+      - File
+  /file/upload/doc/one:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 单文件上限20M。支持格式："txt", "doc", "docx", "dotx", "json", "cvs", "xls",
+        "xlsx", "sql", "msword", "ppt", "pptx", "pdf", "wps", "vsd"
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 模块/业务名，可用于给文件名加前缀目录，注：开头和结尾都不要加反斜杠
+        in: formData
+        name: module
+        type: string
+      - default: 2
+        description: 是否同步到云 oss 1 是,2 否
+        in: formData
+        name: sync_oss
+        type: integer
+      - default: 0
+        description: 自动创建:前缀目录(hash), 0 不使用,1 月, 2 天,3 小时
+        in: formData
+        name: hash_dir
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传结果
+          schema:
+            $ref: '#/definitions/httpresponse.HttpUploadRs'
+      security:
+      - ApiKeyAuth: []
+      summary: 上传一个文档
+      tags:
+      - File
+  /file/upload/img/multi:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 单图片上限2M。支持格式："jpg", "jpeg", "png", "gif", "x-png", "png", "bmp",
+        "pjpeg", "x-icon", "svg", "webp"。
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: files
+        required: true
+        type: file
+      - description: 模块/业务名，可用于给文件名加前缀目录，注：开头和结尾都不要加反斜杠
+        in: formData
+        name: module
+        type: string
+      - default: 2
+        description: 是否同步到云 oss 1 是,2 否
+        in: formData
+        name: sync_oss
+        type: integer
+      - default: 0
+        description: 自动创建:前缀目录(hash), 0 不使用,1 月, 2 天,3 小时
+        in: formData
+        name: hash_dir
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 每个图片的上传结果
+          schema:
+            items:
+              $ref: '#/definitions/httpresponse.HttpUploadRs'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 上传多张图片
+      tags:
+      - File
+  /file/upload/img/one:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 单图片上限2M。支持格式："jpg", "jpeg", "png", "gif", "x-png", "png", "bmp",
+        "pjpeg", "x-icon", "svg", "webp"。
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 模块/业务名，可用于给文件名加前缀目录，注：开头和结尾都不要加反斜杠
+        in: formData
+        name: module
+        type: string
+      - default: 2
+        description: 是否同步到云 oss 1 是,2 否
+        in: formData
+        name: sync_oss
+        type: integer
+      - default: 0
+        description: 自动创建:前缀目录(hash), 0 不使用,1 月, 2 天,3 小时
+        in: formData
+        name: hash_dir
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传结果
+          schema:
+            $ref: '#/definitions/httpresponse.HttpUploadRs'
+      security:
+      - ApiKeyAuth: []
+      summary: 上传一张图片( http-form 表单模式 )
+      tags:
+      - File
+  /file/upload/img/one/stream/base64:
+    post:
+      consumes:
+      - application/json
+      description: 有时前端并没有具体文件，而是在与用户交互中：动态产生的文件(图片)流，如：截图(canvas)，这时候直接把文件流传输后端即可,单图片上限2M。支持格式："jpg",
+        "jpeg", "png", "gif", "x-png", "png", "bmp", "pjpeg", "x-icon", "svg", "webp"。
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.UploadFile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 下载结果
+          schema:
+            $ref: '#/definitions/httpresponse.HttpUploadRs'
+      security:
+      - ApiKeyAuth: []
+      summary: 上传图片 - 流模式 - base64
+      tags:
+      - File
+  /file/upload/packages/one:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 单文件上限 50 M。支持格式："zip", "rar", "apk", "tar", "jar", "7z", "gz",
+        "rz"
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 模块/业务名，可用于给文件名加前缀目录，注：开头和结尾都不要加反斜杠
+        in: formData
+        name: module
+        type: string
+      - default: 2
+        description: 是否同步到云 oss 1 是,2 否
+        in: formData
+        name: sync_oss
+        type: integer
+      - default: 0
+        description: 自动创建:前缀目录(hash), 0 不使用,1 月, 2 天,3 小时
+        in: formData
+        name: hash_dir
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传结果
+          schema:
+            $ref: '#/definitions/httpresponse.HttpUploadRs'
+      security:
+      - ApiKeyAuth: []
+      summary: 上传一个压缩包
+      tags:
+      - File
+  /file/upload/video/one:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 单文件上限20M。支持格式："mp4", "avi", "rm", "mkv", "wmv", "mov", "flv", "fla",
+        "rmvb", "m3u8", "webm", "ts", "wav"
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: 模块/业务名，可用于给文件名加前缀目录，注：开头和结尾都不要加反斜杠
+        in: formData
+        name: module
+        type: string
+      - default: 2
+        description: 是否同步到云 oss 1 是,2 否
+        in: formData
+        name: sync_oss
+        type: integer
+      - default: 0
+        description: 自动创建:前缀目录(hash), 0 不使用,1 月, 2 天,3 小时
+        in: formData
+        name: hash_dir
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传结果
+          schema:
+            $ref: '#/definitions/httpresponse.HttpUploadRs'
+      security:
+      - ApiKeyAuth: []
+      summary: 上传一个视频文件
+      tags:
+      - File
+  /frame/sync/config:
+    get:
+      consumes:
+      - application/json
+      description: 配置信息
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 配置信息
+      tags:
+      - FrameSync
+  /frame/sync/room/history:
+    post:
+      consumes:
+      - application/json
+      description: 用于断线重连，数据量可能较大
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.FrameSyncRoomHistory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/request.FrameSyncRoomHistory'
+      security:
+      - ApiKeyAuth: []
+      summary: 一个房间的玩家历史操作记录
+      tags:
+      - FrameSync
+  /game/match/config:
+    get:
+      consumes:
+      - application/json
+      description: 配置信息
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 配置信息
+      tags:
+      - GameMatch
+  /game/match/lang:
+    get:
+      consumes:
+      - application/json
+      description: 用于日常调试
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 获取语言包
+      tags:
+      - GameMatch
+  /game/match/rule/{id}:
+    get:
+      consumes:
+      - application/json
+      description: RULE是后台录入的，一次匹配的大部分的配置信息
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: query rule id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 获取一个 RULE 的基础信息
+      tags:
+      - GameMatch
+  /game/match/sign:
+    post:
+      consumes:
+      - application/json
+      description: 报名是以（组）为单位的，而校验是以 player 为单位的
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GameMatchSign'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gamematch.Group'
+      security:
+      - ApiKeyAuth: []
+      summary: 玩家加入/报名游戏匹配
+      tags:
+      - GameMatch
+  /game/match/sign/cancel:
+    get:
+      consumes:
+      - application/json
+      description: 删除已参与匹配的玩家信息，以组为单位，如果组里是多个人，其中一个人取消，组里其它的玩家一并都得跟着取消
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: ' '
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.GameMatchPlayerCancel'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 取消报名
+      tags:
+      - GameMatch
+  /gateway/action/map:
+    get:
+      description: 后期考虑替换掉PHP解析过程，直接用GO
+      responses:
+        "200":
+          description: ' '
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: php解析:.proto文件，生成.txt , 再通过GO读取出来
+      tags:
+      - Gateway
+  /gateway/config:
+    get:
+      description: 主要是长连接的配置(端口|协议)
+      responses:
+        "200":
+          description: dddd
+          schema:
+            $ref: '#/definitions/util.NetWayOption'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取网关配置信息
+      tags:
+      - Gateway
+  /gateway/fd/list:
+    get:
+      description: 长连接列表，FD => UID
+      responses:
+        "200":
+          description: 连接结构体
+          schema:
+            $ref: '#/definitions/util.Conn'
+      security:
+      - ApiKeyAuth: []
+      summary: 网关 - 长连接
+      tags:
+      - Gateway
+  /gateway/proto:
+    get:
+      description: proto接口及GRPC微服务函数的信息等
+      responses:
+        "200":
+          description: ' '
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取所有服务的.proto 配置文件
+      tags:
+      - Gateway
+  /gateway/send/msg:
+    post:
+      description: 给某个UID发送一条消息，主要用于测试
+      parameters:
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/pb.ProjectPushMsg'
+      responses:
+        "200":
+          description: ' '
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 网关 - 长连接 - 给某个用户-发送一条消息
+      tags:
+      - Gateway
+  /gateway/service/{service_name}/{func_name}:
+    post:
+      description: 通过网关调取后端服务(grpc)
+      parameters:
+      - description: 服务名
+        in: path
+        name: service_name
+        required: true
+        type: string
+      - description: 函数名
+        in: path
+        name: func_name
+        required: true
+        type: string
+      - description: 任意，请参考.proto
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Empty'
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 网关 - 短连接
+      tags:
+      - Gateway
+  /gateway/total:
+    get:
+      description: metrics
+      responses:
+        "200":
+          description: 连接结构体
+          schema:
+            $ref: '#/definitions/util.Conn'
+      security:
+      - ApiKeyAuth: []
+      summary: 网关 - 长连接 - metrics
+      tags:
+      - Gateway
+  /goods/create/one:
+    post:
+      description: 创建一个商品
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Goods'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 自增ID
+          schema:
+            type: int
+      summary: 创建一个商品
+      tags:
+      - Goods
+  /mail/info:
+    post:
+      consumes:
+      - application/json
+      description: 注意参数
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 参数信息,参考model
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.MailInfo'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.MailLog'
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: 获取用户一条信息的详情
+      tags:
+      - Mail
+  /mail/list:
+    post:
+      consumes:
+      - application/json
+      description: 注意参数
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 参数信息,参考model
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.MailList'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.MailLog'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: 获取用户站内信列表
+      tags:
+      - Mail
+  /mail/send:
+    post:
+      consumes:
+      - application/json
+      description: 注意参数
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 参数信息,参考model
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SendMail'
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: 发送一条站内信
+      tags:
+      - Mail
+  /mail/unread:
+    get:
+      consumes:
+      - application/json
+      description: 注意参数
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "155"
+          schema:
+            type: integer
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: 站内信未读总数
+      tags:
+      - Mail
+  /metrics:
+    post:
+      description: 标量- 实时统计信息
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 标量- 实时统计信息 ,未实现
+      tags:
+      - System
+  /orders/create/one:
+    post:
+      description: 创建一个订单
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Orders'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 自增ID
+          schema:
+            type: int
+      summary: 创建一个订单
+      tags:
+      - Orders
+  /orders/payment:
+    post:
+      description: 支付一个订单
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.Payment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 自增ID
+          schema:
+            type: int
+      summary: 支付一个订单
+      tags:
+      - Orders
+  /persistence/log/push:
+    post:
+      description: 用于后台统计
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.StatisticsLogData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 收集日志,目前是存于MYSQL中，后期可以优化成文件或ES中
+      tags:
+      - Persistence
+  /persistence/log/push/file:
+    post:
+      description: 用于后台统计
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 收集日志(文件)-目前是存于MYSQL中，后期可以优化成文件或ES中
+      tags:
+      - Persistence
+  /persistence/log/push/file/json:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 用于后台统计
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        - "88"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - description: 文件(html中的input的name)
+        in: formData
+        name: file
+        required: true
+        type: file
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      summary: 收集日志(文件)-目前是存于MYSQL中，后期可以优化成文件或ES中
+      tags:
+      - Persistence
+  /sys/config:
+    post:
+      description: 服务进程 - 配置信息
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 服务进程 - 配置信息
+      tags:
+      - System
+  /sys/quit:
+    post:
+      description: 关闭 - 该服务进程
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      summary: 关闭 - 该服务进程
+      tags:
+      - System
+  /tools/const/init/db:
+    get:
+      description: 给后台使用，生成到MYSQL数据库中，便于后台统一使用
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sql script
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 常量列表 - 生成mysql导入GVA中的脚本
+      tags:
+      - Tools
+  /tools/const/list:
+    get:
+      description: 所有常量列表，方便调用与调试
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 常量列表
+          schema:
+            items:
+              $ref: '#/definitions/httpresponse.ConstInfo'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 所有常量列表
+      tags:
+      - Tools
+  /tools/header/struct:
+    get:
+      description: 日常header里放一诸如验证类的东西，统一公示出来，仅是说明，方便测试/前端查看，方便使用
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        enum:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/request.TestHeader'
+      summary: header头-结构体
+      tags:
+      - Tools
+  /tools/init/db/data:
+    get:
+      description: 'tables: project instance server'
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sql script
+          schema:
+            type: string
+      summary: 生成mysql数据-脚本，可导入到DB中
+      tags:
+      - Tools
+  /tools/init/db/structure:
+    get:
+      description: 'tables: project instance server'
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sql script
+          schema:
+            type: string
+      summary: 生成mysql表结构-脚本，可导入到DB中
+      tags:
+      - Tools
+  /tools/project/info/{id}:
+    get:
+      description: 用于开发工具测试
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - description: 项目ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Project'
+      security:
+      - ApiKeyAuth: []
+      summary: 一个项目的详细信息
+      tags:
+      - Tools
+  /tools/project/list:
+    post:
+      description: 每个项目的详细信息
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Project'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 项目列表
+      tags:
+      - Tools
+  /tools/test/full/header:
+    get:
+      description: 日常header里放一诸如验证类的东西，统一公示出来，仅是说明，方便测试/前端查看，方便使用
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        enum:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - default: "1648277052"
+        description: 客户端请求时间 unix
+        in: header
+        name: X-Client-Req-Time
+        required: true
+        type: string
+      - default: abcdefg
+        description: 追踪ID
+        in: header
+        name: X-Request-Id
+        required: true
+        type: string
+      - default: "12345667"
+        description: 请求ID
+        in: header
+        name: X-Trace-Id
+        required: true
+        type: string
+      - default: "12345667"
+        description: 追踪ID
+        in: header
+        name: X-Token
+        required: true
+        type: string
+      - default: "12345667"
+        description: 签名
+        in: header
+        name: X-Sign
+        required: true
+        type: string
+      - default: '{''sn'':”,''pack_name'':”,''app_version'':”,''os'':”,''os_version'':”,''device'':”,''device_version'':”,''lat'':”,''lon'':”,''device_id'':”,''dpi'':”,''ip'':”,''referer'':”}'
+        description: 客户端信息
+        in: header
+        name: X-Base-Info
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/request.TestHeader'
+      summary: header头-结构体
+      tags:
+      - Tools
+  /tools/test/init/db:
+    get:
+      description: 'tables: project instance server'
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: sql script
+          schema:
+            type: string
+      summary: 基数据 - 生成mysql脚本，导入到DB中，供后台UI可视化查看
+      tags:
+      - Tools
+  /tools/test/migu/api/backdata:
+    post:
+      description: 120项目API接口aaa
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SendSMS'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 最终的请求参数信息
+          schema:
+            $ref: '#/definitions/v1.MiguRes'
+      security:
+      - ApiKeyAuth: []
+      summary: 测试咪咕,对方返回的数据信息
+      tags:
+      - Tools
+  /tools/test/migu/api/para:
+    get:
+      description: 120项目API接口
+      parameters:
+      - description: 来源
+        enum:
+        - "11"
+        - "12"
+        - "21"
+        - "22"
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - default: "6"
+        description: 项目ID
+        in: header
+        name: X-Project-Id
+        required: true
+        type: string
+      - default: imzgoframe
+        description: 访问KEY
+        in: header
+        name: X-Access
+        required: true
+        type: string
+      - default: test
+        description: 二次验证-用户名
+        in: header
+        name: X-Second-Auth-Uname
+        required: true
+        type: string
+      - default: qweASD1234560
+        description: 二次验证-密码
+        in: header
+        name: X-Second-Auth-Ps
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 最终的请求参数信息
+          schema:
+            $ref: '#/definitions/v1.MiguRes'
+      security:
+      - ApiKeyAuth: []
+      summary: 测试咪咕
+      tags:
+      - Tools
+  /twin/agora/cloud/record/check:
+    post:
+      consumes:
+      - application/json
+      description: 当有未停止的云端录制时，自动stop掉
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      - ApiKeyAuth: []
+      summary: 检查云端录制环境
+      tags:
+      - TwinAgora
+  /twin/agora/cloud/record/create/acquire:
+    post:
+      consumes:
+      - application/json
+      description: 录屏时，要先从声网，申请一个资源ID，之后，才能开始（声网限制：每秒最多请求10次）
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/util.AgoraAcquireReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 结果
+          schema:
+            $ref: '#/definitions/util.AgoraCloudRecordRes'
+      security:
+      - ApiKeyAuth: []
+      summary: 申请/创建 录屏资源Id
+      tags:
+      - TwinAgora
+  /twin/agora/cloud/record/list:
+    post:
+      description: 获取用户的录屏记录列表
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户的录屏记录列表
+      tags:
+      - TwinAgora
+  /twin/agora/cloud/record/oss/files/{rid}:
+    get:
+      consumes:
+      - application/json
+      description: 将小文件，合并成一个大文件
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: rid
+        in: path
+        name: rid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 处理阿里云OSS上的录屏文件
+      tags:
+      - TwinAgora
+  /twin/agora/cloud/record/query/{rid}:
+    get:
+      consumes:
+      - application/json
+      description: 根据上一步获取到的ResourceId，
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: rid
+        in: path
+        name: rid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 结果
+          schema:
+            $ref: '#/definitions/util.AgoraCloudRecordRes'
+      security:
+      - ApiKeyAuth: []
+      summary: 录屏查询
+      tags:
+      - TwinAgora
+  /twin/agora/cloud/record/start:
+    post:
+      consumes:
+      - application/json
+      description: 根据上一步获取到的ResourceId，开始录屏，其数据会推送到3方的OSS上
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/request.TwinAgoraReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 结果
+          schema:
+            $ref: '#/definitions/util.AgoraCloudRecordRes'
+      security:
+      - ApiKeyAuth: []
+      summary: 开始录屏
+      tags:
+      - TwinAgora
+  /twin/agora/cloud/record/stop/{rid}/{type}:
+    get:
+      consumes:
+      - application/json
+      description: 各种异常情况都最好调一下stop，不然OSS要一直花钱呐....~~~~~
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: rid
+        in: path
+        name: rid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 结果
+          schema:
+            $ref: '#/definitions/util.AgoraCloudRecordRes'
+      security:
+      - ApiKeyAuth: []
+      summary: 停止录屏
+      tags:
+      - TwinAgora
+  /twin/agora/config:
+    get:
+      consumes:
+      - application/json
+      description: 主要是超时时间的配置，C端需要使用
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 呼叫功能的，配置信息
+      tags:
+      - TwinAgora
+  /twin/agora/rtc/get/token:
+    post:
+      consumes:
+      - application/json
+      description: 使用RTC前，动态获取token，然后再登陆声网，才可正常使用声网的功能(token时效是一天，如果存在且未失效正常返回，否则创建新的)
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/request.TwinAgoraToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 获取RTC-token
+      tags:
+      - TwinAgora
+  /twin/agora/rtm/get/token:
+    post:
+      consumes:
+      - application/json
+      description: 使用RTM前，动态获取token，然后再登陆声网，才可正常使用声网的功能(token时效是一天，如果存在且未失效正常返回，否则创建新的)
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        schema:
+          $ref: '#/definitions/request.TwinAgoraToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 获取RTM-token
+      tags:
+      - TwinAgora
+  /twin/agora/socket/tools:
+    get:
+      consumes:
+      - application/json
+      description: 如：房间、用户连接状态等
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: web-socket使用时，一些状态，
+      tags:
+      - TwinAgora
+  /twin/agora/statistics/event/alls:
+    get:
+      consumes:
+      - application/json
+      description: 如：发送标注图次数、发送图片次数、发送视频次数
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: start_time
+        in: path
+        name: start_time
+        required: true
+        type: string
+      - description: end_time
+        in: path
+        name: end_time
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: true:成功 false:否
+          schema:
+            type: boolean
+      security:
+      - ApiKeyAuth: []
+      summary: 获取推送事件的统计信息
+      tags:
+      - TwinAgora
+  /user/delete:
+    delete:
+      consumes:
+      - multipart/form-data
+      description: 欧美国家要求比较严，必须得有这功能，国内现在也有但不多，目前是用来方便开发/测试的，像脚本做自动化测试生成的用户(需要删除)，以及测试员线上测试时产生的用户数据需要删除（危险甚用）
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 用户IDs，多用户时用逗号分割
+        in: formData
+        name: uids
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除用户
+      tags:
+      - User
+  /user/info:
+    get:
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 用户结构体
+          schema:
+            $ref: '#/definitions/model.User'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取当前登陆用户的基础信息(使用头里的token解析)
+      tags:
+      - User
+  /user/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.PageInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取用户列表,目前并没有加筛选条件
+      tags:
+      - User
+  /user/logout:
+    post:
+      description: 删除 jwt，记录日志。不过只是删除一端的JWT，不同端(source_type)登陆都会生成一个jwt
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用户退出
+      tags:
+      - User
+  /user/set/email:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.BindEmail'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 设置成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设定|修改 - 邮箱
+      tags:
+      - User
+  /user/set/info:
+    post:
+      consumes:
+      - application/json
+      description: '""'
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: ID, 用户名, 昵称, 头像链接
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SetUserInfo'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设置/修改 用户基础信息
+      tags:
+      - User
+  /user/set/mobile:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 基础信息
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.BindMobile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设定|修改 - 手机号
+      tags:
+      - User
+  /user/set/password:
+    put:
+      description: 首次设置 与 修改两个动作可以合成一个，因为没有唯一性验证
+      parameters:
+      - default: "11"
+        description: 来源
+        in: header
+        name: X-Source-Type
+        required: true
+        type: string
+      - description: 用户名, 原密码, 新密码
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.SetPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 设置/修改 密码
+      tags:
+      - User
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-Token
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: 基础操作（不需要登陆，但是会验证头信息 , X-SourceType X-Access X-Project 等）
+  name: Base
+- description: 用户相关操作(需要登陆，头里加X-Token = jwt)
+  name: User
+- description: 系统管理(需要二次认证)，管理员使用，普通用户不要访问
+  name: System
+- description: 数字孪生 - agora
+  name: TwinAgora
+- description: 自动化部署与持续集成
+  name: Cicd
+- description: 站内信/内部邮件通知
+  name: Mail
+- description: 3方回调/推送通知
+  name: Callback
+- description: 游戏匹配机制
+  name: GameMatch
+- description: 帧同步
+  name: FrameSync
+- description: 商品相关操作
+  name: Goods
+- description: 订单/支付
+  name: Orders
+- description: 持久化(文件/日志收集)
+  name: Persistence
+- description: 文件系统，如：上传/下载文件，文件包括：图片、视频、文件流等。上传的文件名只允许：字母、数字、下划线、中划线、点，必须有扩展名。 上传后的新文件名：类型ID_unixStamp_md5值.扩展名。文件在本地存一份，可同步到OSS一份，目录可以做hash(月、天、小时)。
+    注：文件上传目前仅支持HTTP协议，也就是form+multipart/form-data模式。(有一个接口支持非HTTP-FORM上传，也就是base64当BODY，但是仅支持图片)。注：有操作路径时，一定不要多一个/少一个反斜杠的【字符】，因为OSS上是直接支持的,LINUX下双反斜杠会自动变成一个。暂不支持：分片传输，断点续传等功能
+  name: File
+- description: 配置中心，它有几个维度注意下： 环境->项目->文件->模块，项目这个维度http-header头中是公共的且已处理，余下3个请求的时候都要带上。目前仅支持：toml格式，后期可加ymal和ini
+  name: ConfigCenter

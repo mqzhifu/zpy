@@ -29,3 +29,10 @@ def set_pd_base(pd):
 
 
     pd.set_option('display.float_format',lambda x : '%.2f' % x)
+
+#判断一个字典是否包含某个keys，如果存在返回该值，否则返回空
+def key_exist_return_value(dist,key):
+    if (key in dist.keys()):
+        return dist[key]
+
+    return ""

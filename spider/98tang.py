@@ -135,7 +135,8 @@ def requestGetOnePageHtml(url , page_index):
     # print(res.read())
 
     htmlData = res.read().decode('utf-8')
-    return htmlData,err
+    print(htmlData)
+    # return htmlData,err
 
 def get_empty_record ():
     record = {
