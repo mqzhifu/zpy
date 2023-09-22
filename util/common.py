@@ -36,3 +36,11 @@ def key_exist_return_value(dist,key):
         return dist[key]
 
     return ""
+
+# 一维 map 转 string ，用于方便输出
+def map_to_str(continer):
+    str = "["
+    for k,v in continer.items():
+        str += k + ":" + v + ","
+
+    return str + "]"

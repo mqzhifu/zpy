@@ -1232,6 +1232,14 @@
                     },
                     {
                         "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "qweASD1234560",
                         "description": "二次验证-密码",
                         "name": "X-Second-Auth-Ps",
@@ -1383,6 +1391,14 @@
                     },
                     {
                         "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "qweASD1234560",
                         "description": "二次验证-密码",
                         "name": "X-Second-Auth-Ps",
@@ -1403,6 +1419,12 @@
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "deployTargetType",
+                        "name": "flag",
+                        "in": "path"
                     }
                 ],
                 "responses": {
@@ -1532,6 +1554,14 @@
                     },
                     {
                         "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "qweASD1234560",
                         "description": "二次验证-密码",
                         "name": "X-Second-Auth-Ps",
@@ -1602,6 +1632,14 @@
                         "default": "imzgoframe",
                         "description": "访问KEY",
                         "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
                         "in": "header",
                         "required": true
                     },
@@ -1682,6 +1720,14 @@
                     },
                     {
                         "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "qweASD1234560",
                         "description": "二次验证-密码",
                         "name": "X-Second-Auth-Ps",
@@ -1757,6 +1803,14 @@
                     },
                     {
                         "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "default": "qweASD1234560",
                         "description": "二次验证-密码",
                         "name": "X-Second-Auth-Ps",
@@ -1827,6 +1881,14 @@
                         "default": "imzgoframe",
                         "description": "访问KEY",
                         "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
                         "in": "header",
                         "required": true
                     },
@@ -2731,10 +2793,31 @@
                 "summary": "配置信息",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -2782,6 +2865,22 @@
                         "required": true
                     },
                     {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
                         "description": "基础信息",
                         "name": "data",
                         "in": "body",
@@ -2821,10 +2920,31 @@
                 "summary": "配置信息",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -2859,10 +2979,31 @@
                 "summary": "获取语言包",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -2897,10 +3038,31 @@
                 "summary": "获取一个 RULE 的基础信息",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -2942,10 +3104,31 @@
                 "summary": "玩家加入/报名游戏匹配",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -2989,10 +3172,31 @@
                 "summary": "取消报名",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -3028,6 +3232,37 @@
                     "Gateway"
                 ],
                 "summary": "php解析:.proto文件，生成.txt , 再通过GO读取出来",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": " ",
@@ -3050,6 +3285,37 @@
                     "Gateway"
                 ],
                 "summary": "获取网关配置信息",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "dddd",
@@ -3072,6 +3338,37 @@
                     "Gateway"
                 ],
                 "summary": "网关 - 长连接",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "连接结构体",
@@ -3094,6 +3391,37 @@
                     "Gateway"
                 ],
                 "summary": "获取所有服务的.proto 配置文件",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": " ",
@@ -3117,6 +3445,35 @@
                 ],
                 "summary": "网关 - 长连接 - 给某个用户-发送一条消息",
                 "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "description": "基础信息",
                         "name": "data",
@@ -3150,6 +3507,35 @@
                 ],
                 "summary": "网关 - 短连接",
                 "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "服务名",
@@ -3196,6 +3582,37 @@
                     "Gateway"
                 ],
                 "summary": "网关 - 长连接 - metrics",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "连接结构体",
@@ -3271,9 +3688,6 @@
                 "security": [
                     {
                         "ApiKeyAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "注意参数",
@@ -3284,180 +3698,6 @@
                     "Mail"
                 ],
                 "summary": "获取用户一条信息的详情",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "11",
-                        "description": "来源",
-                        "name": "X-Source-Type",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "参数信息,参考model",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.MailInfo"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/model.MailLog"
-                        }
-                    }
-                }
-            }
-        },
-        "/mail/list": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "注意参数",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Mail"
-                ],
-                "summary": "获取用户站内信列表",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "11",
-                        "description": "来源",
-                        "name": "X-Source-Type",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "参数信息,参考model",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.MailList"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/model.MailLog"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/mail/send": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "注意参数",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Mail"
-                ],
-                "summary": "发送一条站内信",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "11",
-                        "description": "来源",
-                        "name": "X-Source-Type",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "参数信息,参考model",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.SendMail"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "true:成功 false:否",
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    }
-                }
-            }
-        },
-        "/mail/unread": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "注意参数",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Mail"
-                ],
-                "summary": "站内信未读总数",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "default": "11",
-                        "description": "来源",
-                        "name": "X-Source-Type",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "155",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                }
-            }
-        },
-        "/metrics": {
-            "post": {
-                "description": "标量- 实时统计信息",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "System"
-                ],
-                "summary": "标量- 实时统计信息 ,未实现",
                 "parameters": [
                     {
                         "enum": [
@@ -3489,27 +3729,209 @@
                         "required": true
                     },
                     {
+                        "description": "参数信息,参考model",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.MailInfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.MailLog"
+                        }
+                    }
+                }
+            }
+        },
+        "/mail/list": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "注意参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mail"
+                ],
+                "summary": "获取用户站内信列表",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "qweASD1234560",
-                        "description": "二次验证-密码",
-                        "name": "X-Second-Auth-Ps",
+                        "description": "来源",
+                        "name": "X-Source-Type",
                         "in": "header",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "default": "1648277052",
-                        "description": "客户端请求时间unix",
-                        "name": "X-Client-Req-Time",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数信息,参考model",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.MailList"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.MailLog"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/mail/send": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "注意参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mail"
+                ],
+                "summary": "发送一条站内信",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "参数信息,参考model",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.SendMail"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "true:成功 false:否",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/mail/unread": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "注意参数",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Mail"
+                ],
+                "summary": "站内信未读总数",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "成功",
+                        "description": "155",
                         "schema": {
-                            "type": "string"
+                            "type": "integer"
                         }
                     }
                 }
@@ -3848,6 +4270,105 @@
                         "name": "X-Access",
                         "in": "header",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "qweASD1234560",
+                        "description": "二次验证-密码",
+                        "name": "X-Second-Auth-Ps",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "1648277052",
+                        "description": "客户端请求时间unix",
+                        "name": "X-Client-Req-Time",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/sys/metrics": {
+            "post": {
+                "description": "标量- 实时统计信息",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "System"
+                ],
+                "summary": "标量- 实时统计信息 ,未实现",
+                "parameters": [
+                    {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
+                        "type": "string",
+                        "description": "来源",
+                        "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "qweASD1234560",
+                        "description": "二次验证-密码",
+                        "name": "X-Second-Auth-Ps",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "1648277052",
+                        "description": "客户端请求时间unix",
+                        "name": "X-Client-Req-Time",
+                        "in": "header",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -3897,6 +4418,14 @@
                         "default": "imzgoframe",
                         "description": "访问KEY",
                         "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "test",
+                        "description": "二次验证-用户名",
+                        "name": "X-Second-Auth-Uname",
                         "in": "header",
                         "required": true
                     },
@@ -4773,9 +5302,6 @@
                 "security": [
                     {
                         "ApiKeyAuth": []
-                    },
-                    {
-                        "ApiKeyAuth": []
                     }
                 ],
                 "description": "当有未停止的云端录制时，自动stop掉",
@@ -4791,10 +5317,31 @@
                 "summary": "检查云端录制环境",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -4829,10 +5376,31 @@
                 "summary": "申请/创建 录屏资源Id",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -4872,10 +5440,31 @@
                 "summary": "获取用户的录屏记录列表",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -4910,10 +5499,31 @@
                 "summary": "处理阿里云OSS上的录屏文件",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -4955,10 +5565,31 @@
                 "summary": "录屏查询",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5000,10 +5631,31 @@
                 "summary": "开始录屏",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5046,8 +5698,13 @@
                 "summary": "停止录屏",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
                         "in": "header",
@@ -5055,8 +5712,31 @@
                     },
                     {
                         "type": "string",
-                        "description": "rid",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "resource_id",
                         "name": "rid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "类型",
+                        "name": "type",
                         "in": "path",
                         "required": true
                     }
@@ -5091,10 +5771,31 @@
                 "summary": "呼叫功能的，配置信息",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -5129,10 +5830,31 @@
                 "summary": "获取RTC-token",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5175,10 +5897,31 @@
                 "summary": "获取RTM-token",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5221,10 +5964,31 @@
                 "summary": "web-socket使用时，一些状态，",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -5239,7 +6003,7 @@
                 }
             }
         },
-        "/twin/agora/statistics/event/alls": {
+        "/twin/agora/statistics/event/all": {
             "get": {
                 "security": [
                     {
@@ -5259,10 +6023,31 @@
                 "summary": "获取推送事件的统计信息",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5311,10 +6096,31 @@
                 "summary": "删除用户",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5352,10 +6158,31 @@
                 "summary": "获取当前登陆用户的基础信息(使用头里的token解析)",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -5389,10 +6216,31 @@
                 "summary": "分页获取用户列表,目前并没有加筛选条件",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5433,10 +6281,31 @@
                 "summary": "用户退出",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     }
@@ -5470,10 +6339,31 @@
                 "summary": "设定|修改 - 邮箱",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5517,10 +6407,31 @@
                 "summary": "设置/修改 用户基础信息",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5563,10 +6474,31 @@
                 "summary": "设定|修改 - 手机号",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },
@@ -5591,7 +6523,7 @@
             }
         },
         "/user/set/password": {
-            "put": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
@@ -5607,10 +6539,31 @@
                 "summary": "设置/修改 密码",
                 "parameters": [
                     {
+                        "enum": [
+                            "11",
+                            "12",
+                            "21",
+                            "22"
+                        ],
                         "type": "string",
-                        "default": "11",
                         "description": "来源",
                         "name": "X-Source-Type",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "6",
+                        "description": "项目ID",
+                        "name": "X-Project-Id",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "imzgoframe",
+                        "description": "访问KEY",
+                        "name": "X-Access",
                         "in": "header",
                         "required": true
                     },

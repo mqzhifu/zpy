@@ -11,43 +11,73 @@ class ParserSwagger :
         self.path = path
         self.logLevel = debug
 
-        logging.basicConfig(format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',
-                            level=logging.INFO)  # 配置输出格式、配置日志级别
+        # logging.basicConfig(format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',level=logging.DEBUG)  # 配置输出格式、配置日志级别
+        logging.basicConfig(format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',level=logging.INFO)  # 配置输出格式、配置日志级别
 
         logging.info("swagger file:"+ path +", debug:"+ str(debug))
 
-    def startRun(self):
-        logging.info("startRun:")
-        # 打开源文件
+    # 读取 swagger 配置文件中的内容
+    def loadSwaggerContent(self):
         with open(self.path, 'rb') as file:
             content = file.read()
+
         # 读取文件内容，解析 json 到 py 的变量中
         self.data = json.loads(content)
 
-        logging.debug(self.data.keys())
-        # print(self.data["definitions"])
+        if (not self.data):
+            exit("swagger file content len = 0")
 
+        logging.debug(self.data.keys())
+
+
+
+    def checkFileContent(self):
+        if(not util.common.key_exist_return_value(self.data,"info")):
+            exit("swagger key empty:info")
+
+        if(not util.common.key_exist_return_value(self.data,"paths")):
+            exit("swagger key empty:paths")
+
+        if(not util.common.key_exist_return_value(self.data,"definitions")):
+            exit("swagger key empty:definitions")
+
+        if(not util.common.key_exist_return_value(self.data,"securityDefinitions")):
+            exit("swagger key empty:securityDefinitions")
+
+        if(not util.common.key_exist_return_value(self.data,"tags")):
+            exit("swagger key empty:tags")
+
+    def startRun(self):
+        logging.info("startRun:")
+
+        self.loadSwaggerContent()
+        self.checkFileContent()
+        # 保存，最终解析好的所有数据
         final_data = []
-        paths = self.data["paths"]
-        for path, methods in paths.items():
+        for path, methods in self.data["paths"].items():
             logging.debug("url: "+path)
-            function_info = {"path":path,"method":"","header":{},"body":{},"desc":"","produces":"","consumes":""}
+            function_info = {"path":path,"method":"","header":{},"body":{},"desc":"","produces":"","consumes":"","security":""}
             for method, details in methods.items():
-                logging.debug("method:"+method)
-                function_info["method"] = method.upper()
+                # logging.debug("method:"+method)
 
                 description = util.common.key_exist_return_value(details,"")
                 produces = util.common.key_exist_return_value(details,"produdescriptionces")
                 summary = util.common.key_exist_return_value(details,"summary")
                 tags = util.common.key_exist_return_value(details,"tags")
 
-                logging.debug("desc:"+description +  ',produces:'.join(produces)   + ",summary:"+ summary +  ''.join(tags))
-
                 function_info["desc"] = description
                 function_info["produces"] = "".join(produces)
+                function_info["method"] = method.upper()
+                function_info["tags"] =  ''.join(tags)
+                function_info["summary"] = summary
 
                 if(util.common.key_exist_return_value(details,"consumes")):
                     function_info["consumes"] = "".join(details ["consumes"])
+
+                if(util.common.key_exist_return_value(details,"security")):
+                    function_info["security"] = details["security"]
+
+                # logging.debug(function_info)
 
                 parameters = util.common.key_exist_return_value(details, "parameters")
                 if (parameters):
@@ -59,18 +89,19 @@ class ParserSwagger :
 
             final_data.append(function_info)
 
+        data = {"securityDefinitions":self.data["securityDefinitions"],"list":final_data}
         # self.show(final_data)
-        return final_data
+        return data
 
+    # 处理一个函数的，所有请求的参数
     def processParameters(self,parameters,function_info):
 
         for parameter in parameters:
+            # 参数是一个大json 对象
             if ('schema' in parameter.keys()):
-                ref = parameter["schema"]["$ref"]
-                logging.debug(__name__ + " schema $ref:" + ref)
-                refSplit = ref.split("/")
-
-                function_info["body"] = self.processDefinitions(self.data["definitions"][refSplit[2]])
+                refObjectName = self.getSchemaRef(parameter["schema"]["$ref"])
+                function_info["body"] = self.processDefinitions(self.data["definitions"][refObjectName])
+            # 参数是一个普通类型
             else:
                 parameterType = parameter["in"]
                 key = parameter["name"]
@@ -78,9 +109,7 @@ class ParserSwagger :
                 if (parameterType == "header"):
                     function_info["header"][key] = self.parserOneParaTypeValue(parameter)
                 elif (parameterType == "path"):
-                    # print(function_info["path"],self.parserOneParaTypeValue(parameter),"{"+key+"}")
                     function_info["path"] = function_info["path"].replace("{"+key+"}", "unknow")
-                    # print(function_info["path"])
                 elif (parameterType == "formData"):
                     function_info["body"][key] = self.parserOneParaTypeValue(parameter)
                 else:
@@ -88,7 +117,7 @@ class ParserSwagger :
                     exit()
 
         return function_info
-        # exit()
+
     def processDefinitions(self,definitions):
         if definitions["type"] != "object":
             logging.error("err2 in processDefinitions, no object")
@@ -106,18 +135,18 @@ class ParserSwagger :
 
         return ob
 
+    def getSchemaRef(self,ref):
+        # ref = parameter["$ref"]
+        logging.debug("schema $ref:" +  ref)
+        refSplit = ref.split("/")
+        return refSplit[2]
+
     def parserOneParaTypeValue(self,parameter):
         prefix = "parserOneParaTypeValue type:"
         if(util.common.key_exist_return_value(parameter,"$ref")):
-            ref = parameter["$ref"]
-            logging.debug("schema $ref:" +  ref)
-            refSplit = ref.split("/")
 
-            # self.pp(prefix," error4:",refSplit)
-
-            return self.processDefinitions(self.data["definitions"][refSplit[2]])
-
-
+            refObjectName = self.getSchemaRef(parameter["$ref"])
+            return self.processDefinitions(self.data["definitions"][refObjectName ])
 
         if (parameter['type'] == "string"):
             logging.debug(__name__ + "string")

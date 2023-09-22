@@ -2,27 +2,77 @@ import  autotest.parser_swagger
 import urllib.request
 import socket
 import json
+import logging
+import util.common
+
 
 class ApiTest:
     domain = ""
     port = ""
     httpProtocolType = ""
+    swaggerFilePath = ""
+    httpRequestTimeoutSecond = 2
 
-    def __init__(self,domain,port,httpProtocolType):
+    jwt = ""# 登陆成功的 token
+    swagger_data = []
+    metrics = {} # 一次整体请示所有接口的，汇总统计
+    exceptApiPath = []
+
+    # 构造函数，初始化变量
+    def __init__(self,domain,port,httpProtocolType,swaggerFilePath):
         self.domain = domain
         self.port = port
         self.httpProtocolType = httpProtocolType
+        self.swaggerFilePath = swaggerFilePath
+        self.initMetrics()
+        self.exceptApiPath = ["/sys/quit","/game/match/sign","/game/match/sign/cancel","/user/logout"]
+
+        logging.basicConfig(format='%(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',level=logging.DEBUG)  # 配置输出格式、配置日志级别
+
+    def run(self):
+        logging.info("run")
+
+        ps = autotest.parser_swagger.ParserSwagger(self.swaggerFilePath, 1)
+        self.swagger_data = ps.startRun()
+
+        self.scannerAll()
+
+    # 请示所有API接口
+    def scannerAll(self):
+        logging.info("scannerAll:")
+
+        self.initMetrics()
+
+        domain = self.getUrlPrefix()
+        logging.info("domain:"+domain)
+
+        self.metrics["all"] = len(self.swagger_data['list'])
+        for row in self.swagger_data['list']:
+            if row["path"] in self.exceptApiPath:
+                logging.debug("except:"+row["path"])
+                self.metrics["except"] = self.metrics["except"] + 1
+                continue
+
+            url = domain + row['path']
+            headers = self.setHeaderDefaultValue(row)
+
+            htmlData ,errCode = self.httpRequest(url,row['method'],headers ,row['body'])
+            if (errCode > 0 ):
+                self.metrics["httpFailed"] = self.metrics["httpFailed"] + 1
+                # print("http err code:",errCode)
+            else:
+                self.metrics["httpSuccess"] = self.metrics["httpSuccess"] + 1
+                self.processData(htmlData)
 
 
-    def getUrlPrefix(self):
-        return self.httpProtocolType + "://" + self.domain + ":" + self.port
+        logging.info(self.metrics)
 
+    # 一次请示的，http header 默认值处理
     def setHeaderDefaultValue(self,row):
         headers = row["header"]
         if( not headers):
             return headers
 
-        xToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcm9qZWN0X2lkIjo2LCJzb3VyY2VfdHlwZSI6MTEsImlkIjoxLCJ1c2VybmFtZSI6ImZyYW1lX3N5bmNfMSIsIm5pY2tfbmFtZSI6InN5bmNfMSIsImV4cCI6MTY5NTY0NTk5MSwiaXNzIjoiY2stYXIiLCJuYmYiOjE2OTUyODU5ODF9.aCM8YonGKaSi0OSrPXtM7v5HNV_D5cOhYGI0Xwiqnnc"
         for k,v in headers.items():
             if ('X-Source-Type' == k):
                 headers[k] = "12"
@@ -35,100 +85,112 @@ class ApiTest:
             elif ('X-Second-Auth-Ps' == k):
                 headers[k] = "qweASD1234560"
 
-
-
-        headers["X-Token"] = xToken
-
-        contentType = "application/json; charset=UTF-8"
-        if (row["consumes"]):
-            contentType = row["consumes"]
-
-        headers["Content-Type"] =  contentType
-        return headers
-
-    def run(self):
-
-        ps = autotest.parser_swagger.ParserSwagger("D:/project/zpy/data/swagger.json", 1)
-        data = ps.startRun()
-
-
-        domain = self.getUrlPrefix()
-        total = {"httpFailed":0,"httpSuccess":0, "bussFailed":0,"bussSuccess":0 , "all":len(data)}
-        for row in data:
-            print(row)
-            url = domain + row['path']
-            headers = self.setHeaderDefaultValue(row)
+        # 处理公共请示头的验证：jwt
+        if(util.common.key_exist_return_value(row,"security")):
+            # security = util.common.key_exist_return_value(row,"security")
+            # print(security[0]["ApiKeyAuth"])
+            headers[self.swagger_data["securityDefinitions"]["ApiKeyAuth"]["name"]] = self.loginJWT()
+            # print(self.swagger_data["securityDefinitions"]["ApiKeyAuth"]["name"])
             # print(headers)
             # exit()
 
-            htmlData ,errCode = self.httpRequest(url,row['method'],headers ,row['body'])
-            if (errCode > 0 ):
-                total["httpFailed"] = total["httpFailed"] + 1
-                print("http err code:",errCode)
-            else:
-                total["httpSuccess"] = total["httpSuccess"] + 1
-                total = self.processData(htmlData,total)
-            # exit()
-        print(total)
-        # url = "http://127.0.0.1:1111/swagger/index.html"
-        # headers = {"1":"2"}
-    def processData(self,htmlData,total):
-        print(htmlData)
+        # contentType = "application/json; charset=UTF-8"
+        contentType = "application/json"
+        if (row["consumes"]):
+            contentType = row["consumes"]
+
+        headers["Content-Type"] = contentType
+        return headers
+
+    # 获取 用户 token，如果不存在，就发起请求
+    def loginJWT(self):
+        if (self.jwt):
+            return self.jwt
+
+        domain = self.getUrlPrefix()
+        for row in self.swagger_data['list']:
+            if(row["path"] == "/base/login"):
+                url = domain + row['path']
+                headers = self.setHeaderDefaultValue(row)
+                # print(row['body'])
+                body = {"username":"frame_sync_1" , "password":"123456"}
+                # print(body)
+                htmlData ,errCode = self.httpRequest(url,row['method'],headers ,body)
+                if (errCode > 0 ):
+                    print("http err code:",errCode)
+                else:
+                    bussData = self.processData(htmlData)
+                    self.jwt = bussData["data"]["token"]
+                    return self.jwt
+                break
+
+
+
+
+
+    # 处理：业务返回的内容(json)
+    def processData(self,htmlData):
+        # print(htmlData)
+        data = {}
         try:
             data = json.loads(htmlData)
         except :
             print(" json.loads err:"+htmlData)
         else:
             if(data["code"] != 200):
-                total["bussFailed"] = total["bussFailed"] + 1
-                print(" data failed:"+data["msg"])
+                self.metrics["bussFailed"] = self.metrics["bussFailed"] + 1
+                logging.error(" business data code failed:"+data["msg"])
             else:
-                total["bussSuccess"] = total["bussSuccess"] + 1
-                print(" data ok!")
+                self.metrics["bussSuccess"] = self.metrics["bussSuccess"] + 1
+                logging.info("business data")
 
+        return data
 
-        return total
+    # 发送一次HTTP请示
+    def httpRequest(self,pUrl,pMethod,pHeaders,pData):
+        logging.info("httpRequest url:"+pUrl  + " , method:"+pMethod +" , header:"+ util.common.map_to_str(pHeaders))
 
-
-    def httpRequest(self,pUrl,pMethod,pHeaders,data):
-        print("requestGetOnePageHtml , url:"+pUrl , " , method:"+pMethod, " , header:",pHeaders)
-
-
-        reqObj = urllib.request.Request(url=pUrl,method=pMethod,headers=pHeaders)
+        if(pData):
+            # pData = urllib.parse.urlencode(pData).encode('utf-8')
+            reqObj = urllib.request.Request(url=pUrl,method=pMethod,headers=pHeaders, data=bytes(json.dumps(pData),"utf-8"))
+        else:
+            reqObj = urllib.request.Request(url=pUrl,method=pMethod,headers=pHeaders)
 
         htmlData = ""
-        timeoutSecond = 2
-
-
-
+        errPrefix = "httpRequest err "
         try:
-            res = urllib.request.urlopen(reqObj,timeout=timeoutSecond)
-            # res = urllib.request.urlopen(reqObj)
+            res = urllib.request.urlopen(reqObj,timeout=self.httpRequestTimeoutSecond)
         except urllib.error.URLError as e:
-            print("exception...")
             if hasattr(e,"code"):
-                print("case in :code",e.code)
-                exit()
+                logging.error(errPrefix+" URLError, code: "+str(e.code))
                 return htmlData,1
             if hasattr(e,"reason"):
-                print("case in reason:",e.reason)
+                logging.error(errPrefix+"  reason: "+e.reason)
                 return htmlData,2
         except socket.timeout as e:
             print("except socket.timeout",e)
             return htmlData , 22
 
 
-        print("http res status:",res.status)
+        logging.debug("httpRequest status:" + str(res.status))
         if res.status != 200:
-            print(" http res status err:",res.status)
+            logging.error(errPrefix+ " statusCode:"+str(res.status))
             return htmlData,3
 
         htmlData = res.read().decode('utf-8')
-        # print(res.read())
         if (htmlData):
             return htmlData,0
         else:
+            logging.error(errPrefix + " response empty~")
             return htmlData,33
 
 
         # return htmlData,err
+
+    # 获取一个全新的、空的统计量
+    def initMetrics(self):
+        self.metrics = {"httpFailed":0,"httpSuccess":0, "bussFailed":0,"bussSuccess":0 , "except":0,"all":0}
+
+    # 获取请示的完整URL地址
+    def getUrlPrefix(self):
+        return self.httpProtocolType + "://" + self.domain + ":" + self.port

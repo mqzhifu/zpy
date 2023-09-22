@@ -29,7 +29,7 @@ def main():
 
     # autotest.parser_swagger
 
-    apiTest = autotest.apitest.ApiTest("127.0.0.1","1111","http")
+    apiTest = autotest.apitest.ApiTest("127.0.0.1","1111","http","D:/project/zpy/data/swagger.json")
     apiTest.run()
 
 
