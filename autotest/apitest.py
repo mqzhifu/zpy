@@ -13,6 +13,7 @@ import numpy as np
 import matplotlib.pylab as plt
 from tabulate import tabulate
 
+
 class ApiTest:
     domain = ""
     port = ""
@@ -32,9 +33,17 @@ class ApiTest:
         self.httpProtocolType = httpProtocolType
         self.swaggerFilePath = swaggerFilePath
         self.initMetrics()
-        self.exceptApiPath = ["/sys/quit","/game/match/sign","/game/match/sign/cancel","/user/logout"]
 
-        logging.basicConfig(format='%(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',level=logging.INFO)  # 配置输出格式、配置日志级别
+        self.exceptApiPath = [
+            "/sys/quit","/game/match/sign",
+            "/game/match/sign/cancel",
+            "/user/logout",
+            "/cicd/service/deploy",
+            "/cicd/service/publish/unknow/unknow",
+            "/cicd/local/all/server/service/list"
+        ]
+
+        logging.basicConfig(format='%(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s',level=logging.DEBUG)  # 配置输出格式、配置日志级别
 
     def run(self):
         logging.info("run")
@@ -42,7 +51,11 @@ class ApiTest:
         ps = autotest.parser_swagger.ParserSwagger(self.swaggerFilePath, 1)
         self.swagger_data = ps.startRun()
 
-        self.scannerAll()
+
+        print(self.swagger_data)
+        exit()
+
+        return self.scannerAll()
 
     # 请示所有API接口
     def scannerAll(self):
@@ -57,25 +70,25 @@ class ApiTest:
         domain = self.getUrlPrefix()
         logging.info("domain:"+domain)
 
-        self.metrics["all"] = len(self.swagger_data['list'])
+        self.metrics["all_api"] = len(self.swagger_data['list'])
         for row in self.swagger_data['list']:
-            loopCnt = loopCnt + 1
-            if (loopCnt > 10):
-                break
+            # loopCnt = loopCnt + 1
+            # if (loopCnt > 10):
+            #     break
 
             # requestRecord = {"httpRequestRecord":None,"buss_code":0,"buss_err_msg":""}
 
             if row["path"] in self.exceptApiPath:
-                logging.debug("except:"+row["path"])
-                self.metrics["except"] = self.metrics["except"] + 1
+                logging.debug("request_except_api:"+row["path"])
+                self.metrics["request_except_api"] = self.metrics["request_except_api"] + 1
                 continue
 
             url = domain + row['path']
             headers = self.setHeaderDefaultValue(row)
 
             htmlData ,record = self.httpRequest(url,row['method'],headers ,row['body'])
-
-            if (record["http_code"] != 200 ):
+            # logging.info(record['http_res_code'])
+            if (record["http_res_code"] != 200 ):
                 self.metrics["httpFailed"] = self.metrics["httpFailed"] + 1
             else:
                 self.metrics["httpSuccess"] = self.metrics["httpSuccess"] + 1
@@ -83,10 +96,11 @@ class ApiTest:
 
             showList.append(record)
 
+        return showList,self.getEmptyRecord(),self.metrics
+        # logging.info(self.metrics)
+        # return self.dataTable(showList)
 
-        self.dataTable(showList)
 
-        logging.info(self.metrics)
 
     # 最大值显示红色
     def highlight_max(x):
@@ -109,10 +123,12 @@ class ApiTest:
             html = html + trHtml
 
         html = html + "</table>"
-        print(html)
+        # print(html)
 
-        with open("rs.html", 'w') as file:
-            content = file.write(html)
+        # with open("rs.html", 'w') as file:
+        #     content = file.write(html)
+
+        return html
 
         # colNameList = self.getEmptyRecord().keys()
         # # print(colNameList)
@@ -188,8 +204,8 @@ class ApiTest:
                 body = {"username":"frame_sync_1" , "password":"123456"}
 
                 htmlData ,record = self.httpRequest(url,row['method'],headers ,body)
-                if (record["http_code"] != 200 ):
-                    print("http err code:",record["http_code"])
+                if (record["http_res_code"] != 200 ):
+                    print("http err code:",record["http_res_code"])
                 else:
                     bussData,bussRecord = self.processData(htmlData,record)
                     self.jwt = bussData["data"]["token"]
@@ -224,7 +240,7 @@ class ApiTest:
         return data,requestRecord
 
     def getEmptyRecord(self):
-        return {"url":"","method":"","http_code":-1,"err_code":0,"err_msg":"","exec_time":0,"buss_code":0,"buss_err_msg":""}
+        return {"url":"","method":"","http_res_code":-1,"http_err_code":0,"http_err_msg":"","exec_time":0,"buss_code":0,"buss_err_msg":""}
 
     # 发送一次HTTP请示
     def httpRequest(self,pUrl,pMethod,pHeaders,pData):
@@ -250,27 +266,31 @@ class ApiTest:
         except urllib.error.URLError as e:
             if hasattr(e,"code"):
                 logging.error(errPrefix+" URLError, code: "+str(e.code))
-                record["err_code"] = 41
+
+                record["http_res_code"] = e.code
+                record["http_err_code"] = 41
 
                 return htmlData,record
             if hasattr(e,"reason"):
                 logging.error(errPrefix + "  reason: "+str(e.reason))
-                record["err_code"] = 42
-                record["err_msg"] = e.reason
+                record["http_err_code"] = 42
+                record["http_err_msg"] = e.reason
 
                 return htmlData,record
         except socket.timeout as e:
-            record["err_code"] = 43
-            record["err_msg"] =str(socket.timeout) + e
+            logging.error("socket.timeout")
+            record["http_err_code"] = 43
+            record["http_err_msg"] = str(e)
 
             return htmlData , record
         except Exception as e :
-            record["err_code"] = 43
-
+            logging.error("unkon exception")
+            record["http_err_code"] = 44
             return htmlData , record
 
-        record["exec_time"] = time.time() - start_time
-        record["http_code"] = res.status
+        record["exec_time"] = round(time.time() - start_time,4)
+        record["http_res_code"] = res.status
+
 
         logging.debug("httpRequest status:" + str(res.status))
         if res.status != 200:
@@ -283,7 +303,7 @@ class ApiTest:
             return htmlData,record
 
         logging.error(errPrefix + " response empty~")
-        record["http_code"] = 44
+        record["http_res_code"] = 49
 
         return htmlData,record
 
@@ -293,9 +313,13 @@ class ApiTest:
     # 获取一个全新的、空的统计量
     def initMetrics(self):
         self.metrics = {
-            "httpFailed":0,"httpSuccess":0, "bussFailed":0,"bussSuccess":0 , "except":0,"all":0
+            "httpFailed":0,"httpSuccess":0, "bussFailed":0,"bussSuccess":0 , "request_except_api":0,"all_api":0
         }
 
     # 获取请示的完整URL地址
     def getUrlPrefix(self):
-        return self.httpProtocolType + "://" + self.domain + ":" + self.port
+        p =  self.httpProtocolType + "://" + self.domain
+        if (self.port):
+            p = p + ":" + self.port
+
+        return p

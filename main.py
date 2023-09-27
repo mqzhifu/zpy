@@ -14,7 +14,7 @@ import  os
 import autotest.apitest
 
 def main():
-    # pwd = os.getcwd()
+    pwd = os.getcwd()
     # data_path = pwd + "/data"
     #
     # img_path = pwd + "/test_img"

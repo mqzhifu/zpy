@@ -1,0 +1,118 @@
+<html>
+
+
+<head>
+
+
+</head>
+
+
+<style>
+
+    .style-table {
+        border-collapse: collapse;
+        margin: 50px auto;
+        font-size: 0.9em;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .style-table thead tr {
+        background-color: #0398dd;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    .style-table th,
+    .style-table td {
+        padding: 12px 15px;
+    }
+
+    .style-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .style-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+    }
+
+    .style-table tbody tr:last-of-type {
+        border-bottom: 2px solid #0398dd;
+    }
+
+    .style-table tbody tr.active-row {
+        font-weight: bold;
+        color: #0398dd;
+    }
+
+</style>
+
+
+
+<body>
+
+<div>
+    urlPrefix:{{urlPrefix}}
+</div>
+
+<div>
+    exceptApiPath:
+    {% for v in exceptApiPath  %}
+    {{v}}&nbsp;
+    {% endfor %}
+</div>
+
+<div>
+    <table class="style-table">
+        <thead>
+        {% for head in tableHeader%}
+            <th>{{head}}</th>
+        {% endfor %}
+        </thead>
+
+        {% for row in tableDataList %}
+        <tr>
+            {% for head in tableHeader %}
+
+                {% if (head == 'http_res_code' or head == 'buss_code' ) and  row[head]  != 200  %}
+                    {% set tdStyle = 'color:#FF0000' %}
+                {% elif head == 'url' %}
+                    {% set tdStyle = "" %}
+                {% else %}
+                    {% set tdStyle = "" %}
+                {% endif %}
+
+                <td style="{{ tdStyle }}">{{ filterUrlPrefix( row[head],urlPrefix)| getDefaultValue() }}</td>
+
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+<div>
+    metrics:
+    <table class="style-table">
+        <thead>
+            <th>key</th>
+            <th>数量</th>
+        </thead>
+        {% for k,v in metrics.items() %}
+        <tr>
+            <td>{{k}}</td><td>{{v}}</td>
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+
+
+</body>
+
+<script></script>
+
+
+
+</html>
