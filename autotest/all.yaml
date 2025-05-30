@@ -1,0 +1,1472 @@
+basePath: /
+consumes:
+- application/json
+host: api-b.test.3333d.vip
+info:
+  title: 游戏管理服务
+  version: v1
+paths:
+  /api/v1/tenant/thirdgame/game/category/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - default: IOS100
+        example: IOS100
+        in: header
+        name: X-Device-Id
+        type: string
+      - default: "1"
+        example: "1"
+        in: header
+        name: X-Device-Type
+        type: string
+      - default: B
+        example: B
+        in: header
+        name: X-Platform-Id
+        type: string
+      - default: "10049223"
+        example: "10049223"
+        in: header
+        name: X-Tenant-Id
+        type: string
+      - default: WINDOWS
+        example: WINDOWS
+        in: header
+        name: X-Web-Terminal-Id
+        type: string
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            categoryId:
+              description: 分类id
+              type: integer
+            endAt:
+              description: 结束时间
+              type: integer
+            limit:
+              type: integer
+            name:
+              description: 类型名
+              type: string
+            operator:
+              description: 操作人
+              type: string
+            orderBy:
+              description: 排序自动
+              type: string
+            reverse:
+              description: 正序/反序
+              type: boolean
+            start:
+              type: integer
+            startAt:
+              description: 开始时间
+              type: integer
+            status:
+              description: 状态 1:启用 2:禁用
+              type: integer
+          required:
+          - start
+          - limit
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    categoryId:
+                      type: integer
+                    categoryType:
+                      type: integer
+                    categoryZh:
+                      type: string
+                    createdAt:
+                      type: integer
+                    enterType:
+                      type: integer
+                    entranceCount:
+                      type: integer
+                    iconUrl:
+                      type: string
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    operator:
+                      description: 操作人
+                      type: string
+                    operatorIp:
+                      description: 操作IP
+                      type: string
+                    sort:
+                      type: integer
+                    status:
+                      description: 1:启用 2:禁用
+                      type: integer
+                    statusTag:
+                      description: 状态tag
+                      type: string
+                    updatedAt:
+                      type: integer
+                  required:
+                  - id
+                  - categoryId
+                  - name
+                  - categoryZh
+                  - categoryType
+                  - enterType
+                  - sort
+                  - entranceCount
+                  - status
+                  - statusTag
+                  - iconUrl
+                  - operator
+                  - operatorIp
+                  - createdAt
+                  - updatedAt
+                  type: object
+                type: array
+              total:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 获取游戏分类列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/category/status/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            status:
+              type: integer
+          required:
+          - id
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rowCount:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 更新游戏分类状态
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/category/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            sort:
+              type: integer
+            status:
+              type: integer
+          required:
+          - id
+          - sort
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rowCount:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 更新游戏分类
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            categoryId:
+              description: 游戏类型id
+              type: integer
+            endAt:
+              description: 操作时间
+              type: integer
+            gameCode:
+              description: 游戏标识
+              type: string
+            gameId:
+              description: 游戏id
+              type: integer
+            gameName:
+              description: 游戏name
+              type: string
+            limit:
+              type: integer
+            operator:
+              description: 操作人
+              type: string
+            orderBy:
+              description: 排序自动
+              type: string
+            platformId:
+              description: 平台id
+              type: integer
+            reverse:
+              description: 正序/反序
+              type: boolean
+            start:
+              type: integer
+            startAt:
+              description: 操作时间
+              type: integer
+            tags:
+              description: 游戏标签 (热门)
+              type: integer
+          required:
+          - start
+          - limit
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    categoryId:
+                      type: integer
+                    categoryName:
+                      type: string
+                    createdAt:
+                      type: integer
+                    gameCode:
+                      type: string
+                    gameDirect:
+                      type: integer
+                    gameId:
+                      type: integer
+                    gameName:
+                      type: string
+                    gameNameEn:
+                      type: string
+                    gameTags:
+                      description: 新增字段
+                      items:
+                        properties:
+                          categoryId:
+                            description: 分类ID
+                            type: integer
+                          categoryZh:
+                            description: 分类中文名称
+                            type: string
+                        required:
+                        - categoryId
+                        - categoryZh
+                        type: object
+                      type: array
+                    iconUrl:
+                      type: string
+                    id:
+                      type: integer
+                    operator:
+                      description: 操作人
+                      type: string
+                    platformId:
+                      type: integer
+                    platformName:
+                      type: string
+                    sort:
+                      type: integer
+                    status:
+                      description: 1:开放中 2:维护中 3:已关闭
+                      type: integer
+                    statusTag:
+                      description: status_tag
+                      type: string
+                    tags:
+                      type: string
+                    updatedAt:
+                      type: integer
+                  required:
+                  - id
+                  - gameId
+                  - gameCode
+                  - gameName
+                  - gameNameEn
+                  - categoryId
+                  - categoryName
+                  - gameDirect
+                  - platformId
+                  - platformName
+                  - tags
+                  - gameTags
+                  - iconUrl
+                  - sort
+                  - status
+                  - statusTag
+                  - operator
+                  - createdAt
+                  - updatedAt
+                  type: object
+                type: array
+              total:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 获取游戏列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/menu:
+    post:
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              categoryMenu:
+                type: array
+              platformMenu:
+                type: array
+            type: object
+      schemes:
+      - https
+      summary: 游戏列表下拉菜单
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/name:
+    post:
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list: {}
+              total:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 获取游戏名称列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/orders/export:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            account:
+              description: 会员账号
+              type: string
+            betEndAt:
+              description: 投注结束时间
+              type: integer
+            betStartAt:
+              description: 投注开始时间
+              type: integer
+            categoryId:
+              description: 游戏分类
+              type: integer
+            currencyCode:
+              description: 币种
+              type: string
+            gameId:
+              description: 游戏ID
+              type: integer
+            orderNo:
+              description: 注单号
+              type: string
+            platformId:
+              description: 游戏平台
+              type: integer
+            settleEndAt:
+              description: 结算结束时间
+              type: integer
+            settleStartAt:
+              description: 结算开始时间
+              type: integer
+            status:
+              description: 注单状态
+              type: integer
+            uid:
+              description: 用户ID
+              type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              taskKey:
+                description: 任务ID
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: 注单记录-导出注单
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/orders/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            account:
+              description: 会员账号
+              type: string
+            betEndAt:
+              description: 投注结束时间
+              type: integer
+            betStartAt:
+              description: 投注开始时间
+              type: integer
+            categoryId:
+              description: 游戏分类
+              type: integer
+            currencyCode:
+              description: 币种
+              type: string
+            fixTaskId:
+              description: 补单id
+              type: integer
+            gameId:
+              description: 游戏ID
+              type: integer
+            limit:
+              type: integer
+            orderNo:
+              description: 注单号
+              type: string
+            platformId:
+              description: 游戏平台
+              type: integer
+            resultCate:
+              type: integer
+            resultCateDisputeBig:
+              description: 争议单子
+              type: integer
+            settleEndAt:
+              description: 结算结束时间
+              type: integer
+            settleStartAt:
+              description: 结算开始时间
+              type: integer
+            start:
+              type: integer
+            status:
+              description: 注单状态
+              type: integer
+            uid:
+              description: 用户ID
+              type: integer
+          required:
+          - start
+          - limit
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              betAmount:
+                description: 总投注额
+                type: string
+              betUserCount:
+                description: 下注总人数
+                type: integer
+              bonus:
+                description: 总奖金
+                type: string
+              disputeTotal:
+                type: integer
+              list:
+                items:
+                  properties:
+                    account:
+                      description: 账号
+                      type: string
+                    adjustment:
+                      type: integer
+                    betAmount:
+                      description: 投注金额
+                      type: string
+                    betTime:
+                      description: 投注时间
+                      type: integer
+                    bonus:
+                      description: 派彩金额
+                      type: string
+                    currency:
+                      description: 币种
+                      type: string
+                    gameName:
+                      description: 游戏名称
+                      type: string
+                    gamePlatform:
+                      description: 游戏平台名称
+                      type: string
+                    gameType:
+                      description: 游戏类型
+                      type: string
+                    id:
+                      description: 记录ID
+                      type: integer
+                    orderNo:
+                      description: 注单号
+                      type: string
+                    platform:
+                      description: 游戏平台
+                      type: string
+                    resultCate:
+                      type: integer
+                    settleTime:
+                      description: 结算时间
+                      type: integer
+                    status:
+                      description: 状态
+                      type: integer
+                    uid:
+                      description: 用户ID
+                      type: integer
+                    validAmount:
+                      description: 有效投注
+                      type: string
+                    winLoss:
+                      description: 输赢金额
+                      type: string
+                  required:
+                  - id
+                  - orderNo
+                  - uid
+                  - account
+                  - gameType
+                  - platform
+                  - gameName
+                  - betAmount
+                  - validAmount
+                  - currency
+                  - bonus
+                  - winLoss
+                  - status
+                  - betTime
+                  - settleTime
+                  - gamePlatform
+                  type: object
+                type: array
+              total:
+                type: integer
+              validBetAmount:
+                description: 总有效投注额
+                type: string
+              winLossAmount:
+                description: 总输赢额
+                type: string
+            type: object
+      schemes:
+      - https
+      summary: 注单记录-注单列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/platform/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            endAt:
+              description: 操作时间
+              type: integer
+            limit:
+              type: integer
+            name:
+              description: 平台name
+              type: string
+            operator:
+              description: 操作人
+              type: string
+            orderBy:
+              description: 排序自动
+              type: string
+            platformId:
+              description: 平台id
+              type: integer
+            reverse:
+              description: 正序/反序
+              type: boolean
+            start:
+              type: integer
+            startAt:
+              description: 操作时间
+              type: integer
+            status:
+              description: 状态 1:启用 2:禁用
+              type: integer
+          required:
+          - start
+          - limit
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    apiDomain:
+                      type: string
+                    categoryId:
+                      type: integer
+                    categoryName:
+                      type: string
+                    createdAt:
+                      type: integer
+                    gameDomain:
+                      type: string
+                    gameNums:
+                      type: integer
+                    id:
+                      type: integer
+                    maxTransfer:
+                      type: number
+                    merchantCode:
+                      type: string
+                    minTransfer:
+                      type: number
+                    operator:
+                      description: 操作人
+                      type: string
+                    operatorIp:
+                      description: 操作IP
+                      type: string
+                    platformCode:
+                      type: string
+                    platformId:
+                      type: integer
+                    platformName:
+                      type: string
+                    sort:
+                      type: integer
+                    status:
+                      description: 1:开放中 2:维护中 3:已关闭
+                      type: integer
+                    statusTag:
+                      description: 状态tag
+                      type: string
+                    tenantId:
+                      type: integer
+                    updatedAt:
+                      type: integer
+                  required:
+                  - id
+                  - tenantId
+                  - platformId
+                  - categoryId
+                  - categoryName
+                  - gameNums
+                  - platformCode
+                  - platformName
+                  - merchantCode
+                  - apiDomain
+                  - gameDomain
+                  - status
+                  - statusTag
+                  - sort
+                  - minTransfer
+                  - maxTransfer
+                  - operator
+                  - operatorIp
+                  - createdAt
+                  - updatedAt
+                  type: object
+                type: array
+              total:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 获取游戏平台列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/platform/status/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            status:
+              type: integer
+          required:
+          - id
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rowCount:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 更新游戏平台状态
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/platform/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            sort:
+              type: integer
+            status:
+              type: integer
+          required:
+          - id
+          - sort
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rowCount:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 更新游戏平台
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/record/categories:
+    post:
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    categoryId:
+                      type: integer
+                    name:
+                      type: string
+                    nameZh:
+                      type: string
+                  required:
+                  - categoryId
+                  - name
+                  - nameZh
+                  type: object
+                type: array
+            type: object
+      schemes:
+      - https
+      summary: 注单记录-游戏类型
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/record/gamelist:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            categoryId:
+              description: 游戏类型ID
+              type: integer
+            platformId:
+              description: 平台ID
+              type: integer
+          required:
+          - categoryId
+          - platformId
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    gameCode:
+                      type: string
+                    gameId:
+                      type: integer
+                    gameName:
+                      type: string
+                  required:
+                  - gameId
+                  - gameCode
+                  - gameName
+                  type: object
+                type: array
+            type: object
+      schemes:
+      - https
+      summary: 注单记录-游戏列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/record/platforms:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            categoryId:
+              description: 游戏类型ID
+              type: integer
+          required:
+          - categoryId
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    platformCode:
+                      type: string
+                    platformId:
+                      type: integer
+                    platformName:
+                      type: string
+                  required:
+                  - platformId
+                  - platformCode
+                  - platformName
+                  type: object
+                type: array
+            type: object
+      schemes:
+      - https
+      summary: 注单记录-游戏平台
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/status/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            id:
+              type: integer
+            status:
+              type: integer
+          required:
+          - id
+          - status
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rowCount:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 更新游戏状态
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/tags:
+    post:
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                items:
+                  properties:
+                    categoryId:
+                      description: 分类ID
+                      type: integer
+                    categoryZh:
+                      description: 分类中文名称
+                      type: string
+                  required:
+                  - categoryId
+                  - categoryZh
+                  type: object
+                type: array
+            type: object
+      schemes:
+      - https
+      summary: 获取游戏标签列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/game/update:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            gameDirect:
+              description: 横竖屏
+              type: integer
+            gameName:
+              type: string
+            gameNameEn:
+              type: string
+            iconUrl:
+              type: string
+            id:
+              type: integer
+            sort:
+              type: integer
+            status:
+              type: integer
+            tags:
+              description: 游戏标签 (热门,推荐等)
+              items:
+                type: integer
+              type: array
+          required:
+          - id
+          - gameName
+          - gameNameEn
+          - gameDirect
+          - tags
+          - sort
+          - status
+          - iconUrl
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rowCount:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 更新游戏
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/get/user/order/total:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            status:
+              description: 1已结算 2未结算 3结算异常
+              type: integer
+            tenantCode:
+              description: 租房码，必填写
+              type: string
+            tenantId:
+              type: integer
+            userId:
+              description: 用户ID，必填写
+              type: integer
+          required:
+          - tenantId
+          - tenantCode
+          - status
+          - userId
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              UnsettlementOrderCnt:
+                description: 用户未结算订单数量
+                type: integer
+              userId:
+                description: 用户ID
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 某个用户，注单的汇总统计
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/cancel:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            taskId:
+              description: 任务ID
+              type: integer
+          required:
+          - taskId
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rs:
+                description: 执行结果
+                type: boolean
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-取消列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/const/list:
+    post:
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                additionalProperties:
+                  additionalProperties:
+                    type: string
+                  type: object
+                description: 列表
+                type: object
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-常量列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            execEndTime:
+              description: 任务执行时间-结束时间
+              type: integer
+            execMethod:
+              description: 1自动 2手动
+              type: integer
+            execStartTime:
+              description: 任务执行时间-起始时间
+              type: integer
+            platformId:
+              description: 游戏平台ID
+              type: integer
+          required:
+          - platformId
+          - execStartTime
+          - execEndTime
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              id:
+                description: DB中新增记录ID
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-创建任务
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/exec:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            orderEndTime:
+              description: 任务执行时间-结束时间
+              type: integer
+            orderStartTime:
+              description: 任务执行时间-起始时间
+              type: integer
+            platformCode:
+              description: 游戏平台
+              type: string
+            platformId:
+              description: 游戏平台
+              type: integer
+            taskId:
+              type: integer
+            tenantCode:
+              description: 租户编码
+              type: string
+            tenantId:
+              description: 租户编码
+              type: integer
+          required:
+          - tenantCode
+          - platformCode
+          - taskId
+          - orderStartTime
+          - orderEndTime
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rs:
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-执行
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/list:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            Status:
+              description: 1等待执行2执行中3执行失败4执行成功5取消
+              type: integer
+            createdAtEnd:
+              description: 创建时间-结束时间
+              type: integer
+            createdAtStart:
+              description: 创建时间-起始时间
+              type: integer
+            execEndTime:
+              description: 任务执行时间-结束时间
+              type: integer
+            execStartTime:
+              description: 任务执行时间-起始时间
+              type: integer
+            limit:
+              type: integer
+            operator:
+              description: 操作者
+              type: string
+            platformId:
+              description: 游戏平台
+              type: integer
+            start:
+              type: integer
+            updatedAtEnd:
+              description: 更新时间-结束时间
+              type: integer
+            updatedAtStart:
+              description: 更新时间-起始时间
+              type: integer
+          required:
+          - start
+          - limit
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              list:
+                description: 数据列表
+                items:
+                  properties:
+                    createdAt:
+                      description: 创建时间
+                      type: integer
+                    execEndTime:
+                      description: 任务执行时间-结束时间
+                      type: integer
+                    execInfo:
+                      description: 执行信息
+                      type: string
+                    execMethod:
+                      description: 执行方式1自动2手动
+                      type: integer
+                    execMethodDesc:
+                      description: 新增加的订单Id列表
+                      type: string
+                    execStartTime:
+                      description: 任务执行时间-起始时间
+                      type: integer
+                    fillOrderCnt:
+                      description: 新增加的订单数量
+                      type: integer
+                    fillOrderIdArr:
+                      description: 新增加的订单Id列表数组
+                      items:
+                        type: integer
+                      type: array
+                    fillOrderIds:
+                      description: 新增加的订单Id列表
+                      type: string
+                    id:
+                      type: integer
+                    operator:
+                      description: 操作者
+                      type: string
+                    platformCode:
+                      description: 游戏平台
+                      type: string
+                    platformId:
+                      description: 游戏平台
+                      type: integer
+                    status:
+                      description: 1等待执行2执行中3执行失败4执行成功5取消
+                      type: integer
+                    statusDesc:
+                      description: 新增加的订单Id列表
+                      type: string
+                    tenantCode:
+                      description: 租户编码
+                      type: string
+                    tenantId:
+                      description: 租户编码
+                      type: integer
+                    updatedAt:
+                      description: 最后更新时间
+                      type: integer
+                  required:
+                  - id
+                  - tenantId
+                  - tenantCode
+                  - platformId
+                  - platformCode
+                  - operator
+                  - status
+                  - statusDesc
+                  - fillOrderCnt
+                  - fillOrderIds
+                  - fillOrderIdArr
+                  - execStartTime
+                  - execEndTime
+                  - execMethod
+                  - execMethodDesc
+                  - execInfo
+                  - createdAt
+                  - updatedAt
+                  type: object
+                type: array
+              total:
+                description: 总条数
+                type: integer
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-任务列表
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/retry/exec:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            taskId:
+              description: 任务ID
+              type: integer
+          required:
+          - taskId
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rs:
+                description: 执行结果
+                type: boolean
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-重试任务
+      tags:
+      - ""
+  /api/v1/tenant/thirdgame/task/pull/order/stop:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - in: body
+        name: body
+        required: true
+        schema:
+          properties:
+            taskId:
+              description: 任务ID
+              type: integer
+          required:
+          - taskId
+          type: object
+      produces:
+      - application/json
+      responses:
+        default:
+          description: ""
+          schema:
+            properties:
+              rs:
+                description: 执行结果
+                type: boolean
+            type: object
+      schemes:
+      - https
+      summary: 补单(拉单)-停止任务
+      tags:
+      - ""
+produces:
+- application/json
+schemes:
+- https
+swagger: "2.0"
+x-date: "2025-05-29 16:38:34"
+x-description: This is a goctl generated swagger file.
+x-github: https://github.com/zeromicro/go-zero
+x-go-zero-doc: https://go-zero.dev/
+x-goctl-version: 1.8.3
