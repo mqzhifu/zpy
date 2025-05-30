@@ -6,12 +6,6 @@ import socket
 import json
 import logging
 import util.common
-import pandas as pd
-
-from IPython.display import display
-import numpy as np
-import matplotlib.pylab as plt
-from tabulate import tabulate
 
 
 class ApiTest:
