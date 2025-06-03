@@ -1,7 +1,7 @@
 basePath: /
 consumes:
 - application/json
-host: api-b.test.3333d.vip
+host: api-c.test.3333d.vip
 info:
   title: 游戏管理服务
   version: v1
@@ -1465,7 +1465,7 @@ produces:
 schemes:
 - https
 swagger: "2.0"
-x-date: "2025-05-29 16:38:34"
+x-date: "2025-06-02 10:54:16"
 x-description: This is a goctl generated swagger file.
 x-github: https://github.com/zeromicro/go-zero
 x-go-zero-doc: https://go-zero.dev/
