@@ -1,0 +1,220 @@
+<html>
+
+
+<head>
+    <title>gateway - 网关</title>
+    <script src="static/jquery.min.js" type="text/javascript" ></script>
+</head>
+<style>
+    table
+    {
+        border-collapse: collapse;
+        /*margin: 0 auto;*/
+        text-align: left;
+    }
+    table td, table th
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    table thead th
+    {
+        background-color: #CCE8EB;
+        width: 100px;
+    }
+    table tr:nth-child(odd)
+    {
+        background: #fff;
+    }
+    table tr:nth-child(even) {
+        background: #F5FAFA;
+    }
+
+    .portlet {
+        border:1px solid #ff0000;
+        margin:5px;
+    }
+
+</style>
+
+<body>
+    <div>
+        <table  style="display:inline" >
+
+            <tr><td>登陆账号</td><td>{{username}}</td></tr>
+            <tr><td>tenantId</td><td>{{tenantId}}</td></tr>
+            <tr><td>tenantCode</td><td>{{tenantCode}}</td></tr>
+        </table>
+    </div>
+    </br>
+    <div>
+       <table  style="display:inline" >
+           <tr>
+               <td>id</td> <td>desc</td> <td>http-code</td> <td>buss-code</td>     <td>buss-data</td> <td>buss-msg</td><td>buss-error</td>
+           </tr>
+
+           {% for k,v in  apiRes.items() %}
+            <tr>
+                <td>{{v.id}}</td>
+                <td>{{v.name}}</td>
+                <td>{{v.reqRes.http_res_code}}</td>
+                <td>{{v.bussData.code}}</td>
+                <td>
+                    {% if v.bussData.data %}
+                        {% for k,v in  v.bussData.data.items() %}
+                            {{k}}:{{v}}</br>
+                        {% endfor %}
+                    {% endif %}
+
+                </td>
+                <td>{{v.bussData.msg}}</td>
+                 <td>{{v.bussData.error}}</td>
+            </tr>
+            {% endfor %}
+
+
+
+        </table>
+    </div>
+
+    <br/><br/>
+
+</body>
+
+
+
+<script>
+    // var contentType = 1;
+    // var protocolType = 2;
+    // var userInfo = null;
+    //
+    // function Init(){
+    //     //需要先登陆，获取token ，不然其它请求均失败
+    //     AutoUserLogin(9,LoginRes);
+    // }
+    //
+    // function LoginRes(data){
+    //     console.log("UserLoginBack data:",data);
+    //     userInfo = data;
+    //     //S端配置信息
+    //     request(processServerConfig,"gateway_config",userInfo["token"],false,"GET",null,null);
+    //
+    //     request(GetFDUserList,"gateway_fd_list",userInfo["token"],false,"GET",null,null);
+    //     request(total,"gateway_total",userInfo["token"],false,"GET",null,null)
+    //
+    //     // GetFDUserList();
+    //     // total();
+    // }
+    //
+    // function GetFDUserList(data){
+    //     // $.ajax({
+    //     //     type: "GET",
+    //     //     headers: {
+    //     //         "X-Source-Type": header_X_Source_Type,
+    //     //         "X-Project-Id": header_X_Project_Id,
+    //     //         "X-Access": header_X_Access,
+    //     //     },
+    //     //     url:get_uri_by_name("gateway_fd_list"),
+    //     //     success: function(data){
+    //             var htmlStr = "<tr> <th>uid</th> <th>状态</th> <th>添加时间</th> <th>最后更新时间</th>   <th>content_type</th>  <th>protocol_type</th><th>RTT</th> <td>receive_msg_times</td> <td>receive_msg_size</td> <td>send_msg_times</td> <td>send_msg_size</td> </tr>";
+    //
+    //             // if (data.code != 200){
+    //             //     htmlStr += "<tr><td>请求接口，获取数据，出错</td></tr>"
+    //             //     $("#fd_user_list_div").html(htmlStr);
+    //             //
+    //             //     var msg =  "code:" + data.code +  " , msg:" + data.msg;
+    //             //     return alert(msg);
+    //             // }
+    //
+    //             var fdList = data;
+    //             var fdListLen =  Object.keys(fdList).length;
+    //             if (fdListLen <= 0){
+    //                 htmlStr += "<tr><td>在线用户为0</td></tr>"
+    //                 $("#fd_user_list_div").html(htmlStr);
+    //
+    //                 // return alert("fdListLen == 0");
+    //                 return -1;
+    //             }
+    //
+    //             for (var key in fdList) {
+    //                 var row = fdList[key];
+    //                 var trRow = "<tr>";
+    //                 var metrics = "<td>"+row["metrics"]["receive_msg_times"] + "</td>"+"<td>"+row["metrics"]["receive_msg_size"]+"<td>"+row["metrics"]["send_msg_times"]+"<td>"+row["metrics"]["send_msg_size"];
+    //                 trRow += "<td>"+row["user_id"] + "</td>"+"<td>"+CONN_STATUS_DESC[row["status"]] + "</td>"+"<td>"+formatUnixTime(row["add_time"] )+ "</td>"+"<td>"+formatUnixTime(row["up_time"]) + "</td>"+"<td>"+content_type_desc[row["content_type"]] + "</td>"+"<td>"+protocol_type_desc[row["protocol_type"]] + "</td>"+"<td>"+ row["rtt"] +"</td>";
+    //                 trRow += metrics;
+    //                 trRow += "</tr>";
+    //                 htmlStr += trRow;
+    //             }
+    //
+    //             $("#fd_user_list_div").html(htmlStr);
+    //         // }
+    //     // });
+    // }
+    //
+    // function send_msg(){
+    //     var uid = $("#send_msg_uid").val();
+    //     var content = $("#send_msg_content").val();
+    //     if (!uid){
+    //         return alert("uid 不能为空");
+    //     }
+    //
+    //     if (!content){
+    //         return alert("content 不能为空");
+    //     }
+    // }
+    //
+    //
+    // function total(data){
+    //     // $.ajax({
+    //     //     type: "GET",
+    //     //     async:false,
+    //     //     headers: {
+    //     //         "X-Token":UserList[9].token,
+    //     //     },
+    //     //     url:URI_MAP["gateway_total"],
+    //     //     success: function(data){
+    //             console.log("data:",data)
+    //             var html = "<tr><th>key</th><th>value</th><th>desc</th></>";
+    //             var list = data;
+    //             if(list.length <= 0){
+    //                 html += "<tr><td>空</td></tr>";
+    //             }else{
+    //                 for(var i=0;i<list.length;i++){
+    //                     html += "<tr> <td>"+list[i]["key"]+"</td> <td>"+parseInt(list[i]["value_str"])+"</td> <td>"+list[i]["desc"]+"</td> </tr>"
+    //                 }
+    //             }
+    //
+    //             var metrics_div_obj = $("#metrics_div");
+    //             metrics_div_obj.html(html);
+    //     //     }
+    //     // });
+    // }
+    //
+    // function processServerConfig (data){
+    //     console.log("processServerConfig:",data)
+    //     var showServerCfg = [
+    //         "outIp","wsUri","wsPort","default_protocol_type","outDomain","default_content_type",
+    //         "maxClientConnMum","connTimeout","client_heartbeat_time","server_heartbeat_time","msg_content_max","io_timeout"
+    //     ];
+    //     var html = "";
+    //     console.log("data:",data);
+    //     for(let key  in data){
+    //         for(var i=0;i<showServerCfg.length;i++){
+    //             if (key == showServerCfg[i]){
+    //                 html += "<tr><td>"+key+"</td><td>"+data[key]+"</td>";
+    //             }
+    //         }
+    //     }
+    //     // html += "<tr><td></td></tr>";
+    //     // html += "<tr><td>contentType</td><td>"+ content_type_desc[contentType] +"</td></tr>";
+    //     // html += "<tr><td>protocolType</td><td>"+ protocol_type_desc[protocolType]+"</td></tr>";
+    //
+    //     var serverConfigTable = $("#server_config_table");
+    //     serverConfigTable.html(html);
+    // }
+    //
+    // Init();
+</script>
+
+</html>
