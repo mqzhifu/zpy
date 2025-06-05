@@ -2,8 +2,12 @@
 
 
 <head>
-    <title>gateway - 网关</title>
+    <title>3方游戏注单</title>
     <script src="static/jquery.min.js" type="text/javascript" ></script>
+    <script src="static/dialog.js" type="text/javascript" ></script>
+    <script src="static/zepto.min.js" type="text/javascript" ></script>
+
+    <link rel="stylesheet" href="static/dialog.css">
 </head>
 <style>
     table
@@ -40,39 +44,31 @@
 
 <body>
     <div>
-        <table  style="display:inline" >
+            <div style="float: left ;padding-right: 15px" >
+                <table    id="base_config" style="" >
 
-            <tr><td>登陆账号</td><td>{{username}}</td></tr>
-            <tr><td>tenantId</td><td>{{tenantId}}</td></tr>
-            <tr><td>tenantCode</td><td>{{tenantCode}}</td></tr>
-        </table>
+                </table>
+                <br/>
+            </div>
+
+            <div >
+                <table  id="game_list">
+
+                </table>
+            </div>
+
+            <div style="padding-top: 20px">
+                user_login_token:<span id="user_login_token"></span>
+            </div>
+
+
+            <div><input type="button" onclick="run()" value="运行测试用例" /></div>
     </div>
-    </br>
+
+    <br/>
+
     <div>
-       <table  style="display:inline" >
-           <tr>
-               <td>id</td> <td>desc</td> <td>http-code</td> <td>buss-code</td>     <td>buss-data</td> <td>buss-msg</td><td>buss-error</td>
-           </tr>
-
-           {% for k,v in  apiRes.items() %}
-            <tr>
-                <td>{{v.id}}</td>
-                <td>{{v.name}}</td>
-                <td>{{v.reqRes.http_res_code}}</td>
-                <td>{{v.bussData.code}}</td>
-                <td>
-                    {% if v.bussData.data %}
-                        {% for k,v in  v.bussData.data.items() %}
-                            {{k}}:{{v}}</br>
-                        {% endfor %}
-                    {% endif %}
-
-                </td>
-                <td>{{v.bussData.msg}}</td>
-                 <td>{{v.bussData.error}}</td>
-            </tr>
-            {% endfor %}
-
+        <table id="run_res" >
 
 
         </table>
@@ -82,139 +78,282 @@
 
 </body>
 
+<script>
+    var host = "http://127.0.0.1:4444/"
+    var config = null;
+    function getCommonHeader( ){
+        var now =  Math.round(new Date().getTime()/1000).toString();
+        var header = {
+            "X-Client-Req-Time":now,
+        }
+        return header;
+    }
 
+    function getConfig(){
+        url = host + "get_config"
+        request(getConfigCallback,url,"",false,"GET",null,null);
+    }
+
+    function run(){
+        var req_host = $("#req_host").val();
+        var tenant_id = $("#tenant_id").val();
+        var platform_code = $("#platform_code").val();
+        var user_login_account = $("#user_login_account").val();
+        var user_login_ps = $("#user_login_ps").val();
+        var schemes = $("#schemes").val();
+
+        if (!user_login_account){
+            return alert("user_login_account empty");
+        }
+
+        data = {
+            "req_host":req_host,
+            "tenant_id":tenant_id,
+            "platform_code":platform_code,
+            "user_login_account":user_login_account,
+            "user_login_ps":user_login_ps,
+            "schemes":schemes,
+        }
+
+        url = host + "run"
+        jsonData = JSON.stringify(data)
+        console.log(jsonData)
+        request(runCallback,url,"",false,"POST",jsonData,null);
+    }
+
+    function runCallback(data){
+        console.log("runCallback:",data)
+
+        var content = "            <tr>\n" +
+            "               <td>id</td> <td>desc</td> <td>http-code</td> <td>buss-code</td>\n" +
+            "                <td>buss-data</td> <td>buss-msg</td><td>buss-error</td>\n" +
+            "              <td>操作</td>\n" +
+            "            </tr>";
+
+        for (var i in data){
+            row = data[i]
+            console.log("data row:",row)
+
+
+            if ( !('bussData' in row) || !row.bussData ){
+                continue
+            }
+
+            errorInfo = "-";
+            if ( 'error' in row.bussData){
+               errorInfo =  row.bussData.error
+            }
+
+            msg = "-";
+            if ( 'msg' in row.bussData){
+               msg =  row.bussData.msg
+            }
+
+            if (i == "user_login"){
+                $("#user_login_token").html(data.user_login.bussData.data.token);
+            }
+
+
+            var bussDataContent = "";
+            if ( typeof ( row.bussData.data) != "undefined"){
+                var bussData = row.bussData.data
+                for (var i in bussData){
+                    var tdStr = bussData[i];
+                    if(typeof(bussData[i]) == "string"&& bussData[i].length > 50){
+                        tdStr = bussData[i].substring(0,50) + "..."
+                    }
+                    bussDataContent += i + ":"+tdStr+ "<br/>"
+                }
+            }
+
+            // reqResStr = JSON.stringify(row.reqRes);
+            reqResStr = formatReqObj(row.reqRes);
+            console.log("reqResStr:",reqResStr)
+            // showWinContent = "";
+
+
+            content+= "<tr>";
+            content+=   "<td>"+i+"</td>";
+            content+=    "<td>"+row.name+"</td>"
+            content+=    "<td>"+row.reqRes.http_res_code+"</td>"
+            content+=    "<td>"+row.bussData.code+"</td>"
+            content+=    "<td>"+bussDataContent+"</td>"
+            content+=    "<td>"+msg+"</td>"
+            content+=     "<td>"+errorInfo+"</td>"
+            content+=    "<td>"
+            content+=        "<input type='button' value='请求日志' onclick=\"showWin('"+row.name+"','"+reqResStr+"')\" />"
+            content+=    "</td>"
+           content += "</tr>";
+        }
+
+        console.log("content:",content)
+        $("#run_res").html(content);
+
+    }
+
+
+
+    function getConfigCallback(data){
+        console.log("getConfigCallback:",data)
+        config = data;
+
+        var selectContent = "<select id='tenant_id'>";
+        for (var i in config.tenant){
+           var selected = ""
+            if ( i == "10049223"){
+                selected = "selected";
+            }
+            selectContent += "<option "+selected+" value='"+i+"'>"+config.tenant[i]+"</option>"
+        }
+        selectContent += "</select>";
+
+
+        var platformContent = "<select id='platform_code'>";
+        // console.log(config.platform)
+        for (var i in config.platform){
+            platformContent += "<option value='"+i+"'>"+i +"-" + config.platform[i].platform_code +"</option>"
+        }
+        platformContent += "</select>";
+
+        var hostContent = "<select id='req_host'>";
+        // console.log(config.host)
+        for (var i in config.host){
+            hostContent += "<option value='"+config.host[i]+"'>"+config.host[i] +"</option>"
+        }
+        hostContent += "</select>";
+
+
+        var schemesContent = "<select id='schemes'>";
+        console.log(config.schemes)
+        for (var i in config.schemes){
+            schemesContent += "<option value='"+config.schemes[i]+"'>"+config.schemes[i] +"</option>"
+        }
+        schemesContent += "</select>";
+
+
+
+        var content =
+            "<tr><th>当前动态设置：</th></tr>"+
+            "<tr><td>登陆账号</td><td> <input type='text' id='user_login_account' value='11911111180' /> </td></tr>"+
+            "<tr><td>登陆密码</td><td> <input type='text' id='user_login_ps' /> </td></tr>"+
+            "<tr><td>host</td><td> "+hostContent+"</td></tr>"+
+            "<tr><td>平台</td><td> "+platformContent+"</td></tr>"+
+            "<tr><td>schemes</td><td> "+schemesContent+"</td></tr>"+
+            "<tr><td>tenant</td><td> "+selectContent+"</td></tr>";
+
+        $("#base_config").html(content);
+
+        var gameListHtml = "<tr><th>国家</th><th>名称</th><th>game_id</th><th>game_code</th></tr>";
+        var gameList = data.game_list;
+        for (var i in gameList){
+            gameListHtml += "<tr><td>" +i + "</td><td>" + gameList[i].name + "</td><td>"+gameList[i].game_id+"</td><td>"+gameList[i].game_code+"</td></tr>"
+        }
+        console.log("gameList:",gameList)
+
+
+        $("#game_list").html(gameListHtml);
+    }
+
+    function request(callback,httpUrl,useToken,async,httpMethod,httpData,uriReplace) {
+        $.ajax({
+            headers: getCommonHeader(),
+            type: httpMethod,
+            data: httpData,
+            url: httpUrl,
+            // dataType: "json",
+            contentType: "application/json;charset=utf-8",
+            async: async,
+            success: function (data) {
+                console.log("http request : back data:", data);
+                data = eval("("+data+")")
+                if (data.code != 200) {
+                    return alert("server back err:" + data.msg);
+                }
+
+                callback(data.data);
+            }
+        });
+    }
+
+    function formatUnixTime(us){
+        if (us <= 0 ){
+            return "--";
+        }
+
+        var tims = new Date(us*1000);
+        var format = tims.toLocaleString()
+        return format;
+    }
+
+    getConfig()
+
+</script>
 
 <script>
-    // var contentType = 1;
-    // var protocolType = 2;
-    // var userInfo = null;
-    //
-    // function Init(){
-    //     //需要先登陆，获取token ，不然其它请求均失败
-    //     AutoUserLogin(9,LoginRes);
-    // }
-    //
-    // function LoginRes(data){
-    //     console.log("UserLoginBack data:",data);
-    //     userInfo = data;
-    //     //S端配置信息
-    //     request(processServerConfig,"gateway_config",userInfo["token"],false,"GET",null,null);
-    //
-    //     request(GetFDUserList,"gateway_fd_list",userInfo["token"],false,"GET",null,null);
-    //     request(total,"gateway_total",userInfo["token"],false,"GET",null,null)
-    //
-    //     // GetFDUserList();
-    //     // total();
-    // }
-    //
-    // function GetFDUserList(data){
-    //     // $.ajax({
-    //     //     type: "GET",
-    //     //     headers: {
-    //     //         "X-Source-Type": header_X_Source_Type,
-    //     //         "X-Project-Id": header_X_Project_Id,
-    //     //         "X-Access": header_X_Access,
-    //     //     },
-    //     //     url:get_uri_by_name("gateway_fd_list"),
-    //     //     success: function(data){
-    //             var htmlStr = "<tr> <th>uid</th> <th>状态</th> <th>添加时间</th> <th>最后更新时间</th>   <th>content_type</th>  <th>protocol_type</th><th>RTT</th> <td>receive_msg_times</td> <td>receive_msg_size</td> <td>send_msg_times</td> <td>send_msg_size</td> </tr>";
-    //
-    //             // if (data.code != 200){
-    //             //     htmlStr += "<tr><td>请求接口，获取数据，出错</td></tr>"
-    //             //     $("#fd_user_list_div").html(htmlStr);
-    //             //
-    //             //     var msg =  "code:" + data.code +  " , msg:" + data.msg;
-    //             //     return alert(msg);
-    //             // }
-    //
-    //             var fdList = data;
-    //             var fdListLen =  Object.keys(fdList).length;
-    //             if (fdListLen <= 0){
-    //                 htmlStr += "<tr><td>在线用户为0</td></tr>"
-    //                 $("#fd_user_list_div").html(htmlStr);
-    //
-    //                 // return alert("fdListLen == 0");
-    //                 return -1;
-    //             }
-    //
-    //             for (var key in fdList) {
-    //                 var row = fdList[key];
-    //                 var trRow = "<tr>";
-    //                 var metrics = "<td>"+row["metrics"]["receive_msg_times"] + "</td>"+"<td>"+row["metrics"]["receive_msg_size"]+"<td>"+row["metrics"]["send_msg_times"]+"<td>"+row["metrics"]["send_msg_size"];
-    //                 trRow += "<td>"+row["user_id"] + "</td>"+"<td>"+CONN_STATUS_DESC[row["status"]] + "</td>"+"<td>"+formatUnixTime(row["add_time"] )+ "</td>"+"<td>"+formatUnixTime(row["up_time"]) + "</td>"+"<td>"+content_type_desc[row["content_type"]] + "</td>"+"<td>"+protocol_type_desc[row["protocol_type"]] + "</td>"+"<td>"+ row["rtt"] +"</td>";
-    //                 trRow += metrics;
-    //                 trRow += "</tr>";
-    //                 htmlStr += trRow;
-    //             }
-    //
-    //             $("#fd_user_list_div").html(htmlStr);
-    //         // }
-    //     // });
-    // }
-    //
-    // function send_msg(){
-    //     var uid = $("#send_msg_uid").val();
-    //     var content = $("#send_msg_content").val();
-    //     if (!uid){
-    //         return alert("uid 不能为空");
-    //     }
-    //
-    //     if (!content){
-    //         return alert("content 不能为空");
-    //     }
-    // }
-    //
-    //
-    // function total(data){
-    //     // $.ajax({
-    //     //     type: "GET",
-    //     //     async:false,
-    //     //     headers: {
-    //     //         "X-Token":UserList[9].token,
-    //     //     },
-    //     //     url:URI_MAP["gateway_total"],
-    //     //     success: function(data){
-    //             console.log("data:",data)
-    //             var html = "<tr><th>key</th><th>value</th><th>desc</th></>";
-    //             var list = data;
-    //             if(list.length <= 0){
-    //                 html += "<tr><td>空</td></tr>";
-    //             }else{
-    //                 for(var i=0;i<list.length;i++){
-    //                     html += "<tr> <td>"+list[i]["key"]+"</td> <td>"+parseInt(list[i]["value_str"])+"</td> <td>"+list[i]["desc"]+"</td> </tr>"
-    //                 }
-    //             }
-    //
-    //             var metrics_div_obj = $("#metrics_div");
-    //             metrics_div_obj.html(html);
-    //     //     }
-    //     // });
-    // }
-    //
-    // function processServerConfig (data){
-    //     console.log("processServerConfig:",data)
-    //     var showServerCfg = [
-    //         "outIp","wsUri","wsPort","default_protocol_type","outDomain","default_content_type",
-    //         "maxClientConnMum","connTimeout","client_heartbeat_time","server_heartbeat_time","msg_content_max","io_timeout"
-    //     ];
-    //     var html = "";
-    //     console.log("data:",data);
-    //     for(let key  in data){
-    //         for(var i=0;i<showServerCfg.length;i++){
-    //             if (key == showServerCfg[i]){
-    //                 html += "<tr><td>"+key+"</td><td>"+data[key]+"</td>";
-    //             }
-    //         }
-    //     }
-    //     // html += "<tr><td></td></tr>";
-    //     // html += "<tr><td>contentType</td><td>"+ content_type_desc[contentType] +"</td></tr>";
-    //     // html += "<tr><td>protocolType</td><td>"+ protocol_type_desc[protocolType]+"</td></tr>";
-    //
-    //     var serverConfigTable = $("#server_config_table");
-    //     serverConfigTable.html(html);
-    // }
-    //
-    // Init();
+
+    function formatReqObj(reqObj){
+        console.log("reqObj:",reqObj)
+
+        var formatReqObjStr = '<table>';
+        formatReqObjStr += "<tr><td>url</td><td>"+reqObj.url+"</td></tr>"
+        formatReqObjStr += "<tr><td>method</td><td>"+reqObj.method+"</td></tr>"
+        formatReqObjStr += "<tr><td></td><td></td></tr>"
+        h = reqObj.headers
+        console.log("header:",h)
+        for (var i in h){
+            formatReqObjStr += "<tr><td>"+i+"</td><td>"+h[i]+"</td></tr>"
+        }
+        formatReqObjStr += "<tr><td></td><td></td></tr>"
+
+        data = reqObj.data
+        console.log("data:",data)
+        for (var i in data){
+            formatReqObjStr += "<tr><td>"+i+"</td><td>"+data[i]+"</td></tr>"
+        }
+
+        formatReqObjStr +='</table>'
+
+        return formatReqObjStr;
+    }
+
+    function  showWin(title,reqResObjStr){
+        console.log("reqResObjStr:",reqResObjStr)
+        // rr = reqResObjStr.replaceAll("'", '"');
+        // rr = rr.replaceAll("True", 'true');
+        // rr = rr.replaceAll("False", 'false');
+
+        // reqObj = eval("("+reqResObjStr + ")")
+        // console.log(reqObj)
+        //
+        // content = '<table>';
+        // content += "<tr><td>url</td><td>"+reqObj.url+"</td></tr>"
+        // content += "<tr><td>method</td><td>"+reqObj.method+"</td></tr>"
+        // content += "<tr><td></td><td></td></tr>"
+        // h = reqObj.headers
+        // console.log("header:",h)
+        // for (var i in h){
+        //     content += "<tr><td>"+i+"</td><td>"+h[i]+"</td></tr>"
+        // }
+        // content += "<tr><td></td><td></td></tr>"
+        //
+        // data = reqObj.data
+        // console.log("data:",data)
+        // for (var i in data){
+        //     content += "<tr><td>"+i+"</td><td>"+data[i]+"</td></tr>"
+        // }
+        //
+        // content +='</table>'
+
+        $.dialog({
+            titleText : title,
+            // contentHtml : '<p>'+content+'</p>'
+            contentHtml : '<p>'+reqResObjStr+'</p>'
+        });
+    }
+
+
 </script>
+
+
 
 </html>

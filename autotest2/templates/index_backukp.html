@@ -1,0 +1,139 @@
+<html>
+
+
+<head>
+    <title>3方游戏注单</title>
+    <script src="static/jquery.min.js" type="text/javascript" ></script>
+    <script src="static/dialog.js" type="text/javascript" ></script>
+    <script src="static/zepto.min.js" type="text/javascript" ></script>
+
+    <link rel="stylesheet" href="static/dialog.css">
+</head>
+<style>
+    table
+    {
+        border-collapse: collapse;
+        /*margin: 0 auto;*/
+        text-align: left;
+    }
+    table td, table th
+    {
+        border: 1px solid #cad9ea;
+        color: #666;
+        height: 30px;
+    }
+    table thead th
+    {
+        background-color: #CCE8EB;
+        width: 100px;
+    }
+    table tr:nth-child(odd)
+    {
+        background: #fff;
+    }
+    table tr:nth-child(even) {
+        background: #F5FAFA;
+    }
+
+    .portlet {
+        border:1px solid #ff0000;
+        margin:5px;
+    }
+
+</style>
+
+<body>
+    <div>
+        <table  style="display:inline" >
+            <tr><th>当前动态设置：</th></tr>
+            <tr><td>登陆账号</td><td>{{baseConfig.username}}</td></tr>
+            <tr><td>tenantId</td><td>{{baseConfig.tenantId}}</td></tr>
+            <tr><td>tenantCode</td><td>{{baseConfig.tenantCode}}</td></tr>
+            <tr><td>userId</td><td>{{baseConfig.uid}}</td></tr>
+        </table>
+        <div>
+            token:{{baseConfig.token}}
+        </div>
+    </div>
+    </br>
+    <div>
+       <table  style="display:inline" >
+           <tr>
+               <td>id</td> <td>desc</td> <td>http-code</td> <td>buss-code</td>     <td>buss-data</td> <td>buss-msg</td><td>buss-error</td>
+               <td>操作</td>
+           </tr>
+
+           {% for k,v in  apiRes.items() %}
+            <tr>
+                <td>{{v.id}}</td>
+                <td>{{v.name}}</td>
+                <td>{{v.reqRes.http_res_code}}</td>
+                <td>{{v.bussData.code}}</td>
+                <td>
+                    {% if v.bussData.data %}
+                        {% for k,v in  v.bussData.data.items() %}
+                                {{k}}:{{ ( v|string)|truncate(length=50) }}
+                            </br>
+                        {% endfor %}
+                    {% endif %}
+
+                </td>
+                <td>{{v.bussData.msg}}</td>
+                 <td>{{v.bussData.error}}</td>
+                <td>
+                    <input type="button" value="请求日志" onclick='showWin("{{v.name}}","{{v.reqRes}}")' />
+                </td>
+            </tr>
+            {% endfor %}
+
+
+
+        </table>
+    </div>
+
+    <br/><br/>
+
+</body>
+
+<script>
+    function  showWin(title,reqResObjStr){
+        rr = reqResObjStr.replaceAll("'", '"');
+        rr = rr.replaceAll("True", 'true');
+        rr = rr.replaceAll("False", 'false');
+
+
+        reqObj = eval("("+rr + ")")
+        console.log(reqObj)
+
+        content = '<table>';
+        content += "<tr><td>url</td><td>"+reqObj.url+"</td></tr>"
+        content += "<tr><td>method</td><td>"+reqObj.method+"</td></tr>"
+        content += "<tr><td></td><td></td></tr>"
+        h = reqObj.headers
+        console.log("header:",h)
+        for (var i in h){
+            content += "<tr><td>"+i+"</td><td>"+h[i]+"</td></tr>"
+        }
+        content += "<tr><td></td><td></td></tr>"
+
+        data = reqObj.data
+        console.log("data:",data)
+        for (var i in data){
+            content += "<tr><td>"+i+"</td><td>"+data[i]+"</td></tr>"
+        }
+
+        content +='</table>'
+
+
+        $.dialog({
+        titleText : title,
+        contentHtml : '<p>'+content+'</p>'
+    });
+    }
+
+
+</script>
+
+
+
+</html>

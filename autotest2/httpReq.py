@@ -10,7 +10,7 @@ class HttpRequest():
     Host = ""
     Headers = {}
     Schemes = ""
-    HttpRequestTimeoutSecond = 2
+    HttpRequestTimeoutSecond = 10
 
     def __init__(self,schemes,host,headers):
         self.Host = host
@@ -27,13 +27,13 @@ class HttpRequest():
         if (not headers):
             headers = self.Headers
 
-
         headers["content-type"] = contentType
+        record["headers"] = headers
+        record["data"] = data
 
         # print("httpRequest url:" + record["url"] + " , method:" + method + " , header:" + map_to_str(headers))
         # print("httpRequest url:" + record["url"] + " , method:" + method ,",data:",data )
         print("httpRequest url:" + record["url"] + " , method:" + method)
-
 
         if (data):
             if (contentType == "application/json"):
@@ -50,7 +50,7 @@ class HttpRequest():
         errPrefix = "httpRequest err "
 
         start_time = time.time()
-        res = urllib.request.urlopen(reqObj, timeout=self.HttpRequestTimeoutSecond)
+        # res = urllib.request.urlopen(reqObj, timeout=self.HttpRequestTimeoutSecond)
         try:
             res = urllib.request.urlopen(reqObj, timeout=self.HttpRequestTimeoutSecond)
         except urllib.error.URLError as e:
@@ -58,30 +58,27 @@ class HttpRequest():
                 print(errPrefix + " URLError, code: " + str(e.code))
 
                 record["http_res_code"] = e.code
-                record["http_err_code"] = 41
-
+                record["http_err_msg"] = "e-code"
                 return htmlData, record
             if hasattr(e, "reason"):
                 print(errPrefix + "  reason: " + str(e.reason))
 
                 record["http_res_code"] = e.code
-                record["http_err_code"] = 42
                 record["http_err_msg"] = e.reason
 
                 return htmlData, record
         except socket.timeout as e:
             logging.error("socket.timeout")
 
-            record["http_res_code"] = e.code
-            record["http_err_code"] = 43
+            record["http_res_code"] = 60
             record["http_err_msg"] = str(e)
 
             return htmlData, record
         except Exception as e:
             print("unkon exception")
 
-            record["http_res_code"] = e.code
-            record["http_err_code"] = 44
+            record["http_res_code"] = 61
+            record["http_err_msg"] = str(e)
             return htmlData, record
 
         record["exec_time"] = round(time.time() - start_time, 4)
@@ -97,38 +94,42 @@ class HttpRequest():
             return htmlData, record
 
         print(errPrefix + " response empty~")
-        record["http_res_code"] = 49
+        record["http_res_code"] = 68
+        record["http_err_msg"] = "response empty"
 
         return htmlData, record
 
     def getEmptyRecord(self):
-        return {"url": "", "method": "", "http_res_code": -1, "http_err_code": 0, "http_err_msg": "", "exec_time": 0,
+        return {"url": "", "method": "", "http_res_code": -1, "http_err_msg": "", "exec_time": 0,"headers": {},"data":{},
                 "buss_code": 0, "buss_err_msg": ""}
 
     def getBussDataRecord(self):
-        return {"code":-1,"msg":"","data":"","error":""}
+        return {"code":-1,"msg":"","data":"","error":"-"}
 
-    def processBussData(self, htmlData, requestRecord):
-        data = {}
+    def processBussData(self, htmlData):
+        data = self.getBussDataRecord()
         try:
             data = json.loads(htmlData)
         except:
-            logging.error(" json.loads err:" + htmlData)
-            requestRecord["buss_code"] = 51
-            requestRecord["buss_err_msg"] = " json.loads err:" + htmlData
+            print(" json.loads err:" + htmlData)
+            data["code"] = 500
+            data["msg"] = " json.loads err:" + htmlData
+            # requestRecord["buss_code"] = 51
+            # requestRecord["buss_err_msg"] = " json.loads err:" + htmlData
         else:
-            requestRecord["buss_code"] = data["code"]
-            if (data["code"] != 0):
-                requestRecord["buss_err_msg"] = data["msg"]
-                requestRecord["buss_code"] =60
+            print("httpReq processBussData ok~~~~~~")
+            # requestRecord["buss_code"] = data["code"]
+            # if (data["code"] != 0):
+                # requestRecord["buss_err_msg"] = data["msg"]
+                # requestRecord["buss_code"] =60
                 # self.metrics["bussFailed"] = self.metrics["bussFailed"] + 1
                 # logging.error(" business data code failed:" + data["msg"])
-            else:
-                requestRecord["buss_code"] = 200
+            # else:
+                # requestRecord["buss_code"] = 200
                 # self.metrics["bussSuccess"] = self.metrics["bussSuccess"] + 1
                 # logging.info("business data")
 
-        return data, requestRecord
+        return data
 
 
     def processCallbackBussData(self, htmlData, requestRecord):
