@@ -198,10 +198,7 @@ def index():
     return render_template('index.html')
 
 app.run(host='0.0.0.0', port=4444,debug=True)
-
-
-
-
+# app.run(host='192.168.31.54', port=4444,debug=True)
 
 
 print("finish..........")

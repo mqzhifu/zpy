@@ -3,11 +3,18 @@
 
 <head>
     <title>3方游戏注单</title>
-    <script src="static/jquery.min.js" type="text/javascript" ></script>
-    <script src="static/dialog.js" type="text/javascript" ></script>
-    <script src="static/zepto.min.js" type="text/javascript" ></script>
 
-    <link rel="stylesheet" href="static/dialog.css">
+
+
+    <script src="{{ url_for('static',filename ='jquery.min.js') }}" type="text/javascript" ></script>
+    <script src="{{ url_for('static',filename ='dialog.js') }}" type="text/javascript" ></script>
+    <script src="{{ url_for('static',filename ='zepto.min.js') }}" type="text/javascript" ></script>
+<!--    <script src="static/jquery.min.js" type="text/javascript" ></script>-->
+<!--    <script src="static/dialog.js" type="text/javascript" ></script>-->
+<!--    <script src="static/zepto.min.js" type="text/javascript" ></script>-->
+
+<!--    <link rel="stylesheet" href="static/dialog.css">-->
+    <link rel="stylesheet" href="{{ url_for('static',filename ='dialog.css') }}">
 </head>
 <style>
     table
